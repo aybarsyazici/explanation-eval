@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 // Constants
 const COOKIE_NAME = "appVersion";
-const DEFAULT_VERSION = 0;
+const DEFAULT_VERSION = -1;
 
 // Helper function to get cookie by name and decode the value
 const getCookie = (name: string): number | null => {

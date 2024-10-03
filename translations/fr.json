@@ -5,21 +5,25 @@
   "WelcomeScreen": {
     "WelcomeMessage": "Bienvenue à Gen-AI Kitchen!",
     "PasswordMessage": "Entrez le mot de passe de la version de l'application que vous souhaitez utiliser",
+    "PasswordLabel": "Mot de passe pour la version de l'application",
     "HoverMessage": "PS : (survolez ici pour me rappeler)",
-    "ChangeAppMessage": "Changer la version de l'application",
+    "ChangeAppMessage": "Changer la version de l'application ou le nom d'utilisateur",
     "SwitchLang": "Changer la langue en anglais",
     "Start": "Commencer à cuisiner",
     "AboutUs": "À propos de nous",
     "DarkMode": "Activer/Désactiver le mode sombre",
     "SwitchToSentence": "Passer en mode phrase",
-    "SwitchToWord": "Passer en mode mot"
+    "SwitchToWord": "Passer en mode mot",
+    "UserIDMessage": "Entrez le nom d'utilisateur que vous souhaitez utiliser",
+    "UserIDLabel": "Nom d'utilisateur",
+    "Save": "Sauvegarder"
   },
   "AppVersion": {
-    "Change": "Version de l'application changée en : ",
-    "Invalid": "Mot de passe invalide"
+    "Change": "Le Nom d'utilisateur a été sauvegardé et version de l'application changée en : ",
+    "Invalid": "Mot de passe ou nom d'utilisateur invalide"
   },
   "Tour": {
-    "Change": "Changer la version de l'application",
+    "Change": "Changer la version de l'application ou le nom d'utilisateur",
     "Restart": "Redémarrer la visite",
     "Warning": "Vous êtes actuellement au milieu d'une recette. Veuillez la terminer avant de redémarrer la visite.",
     "WelcomeTitle": "Bienvenue!",
@@ -68,13 +72,13 @@
     "Warning": "Notez que cela pourrait entraîner une déviation significative de la recette originale."
   },
   "guider": {
-    "step1Title": "Votre Recette",
-    "step1Description": "Écrivez votre recette ! Et cliquez sur soumettre pour obtenir une nouvelle recette !",
-    "step2Title": "Attendez !",
-    "step2Description": "Nous cuisinons votre recette améliorée ! Veuillez patienter !",
-    "step3Title": "Marquez les changements !",
-    "step3Description": "Votre nouvelle recette est là ! Cliquez sur les mots que vous pensez être nouveaux !",
-    "step4Title": "Terminé !",
-    "step4Description": "Vous avez terminé !"
+    "step1Title": "Pré-test",
+    "step1Description": "Vous recevrez une recette et serez invité à trouver des améliorations potentielles!",
+    "step2Title": "Utilisez l'application! #1",
+    "step2Description": "Écrivez une recette et obtenez la version améliorée. Apprenez ce qui rend une recette bonne!",
+    "step3Title": "Utilisez l'application! #2",
+    "step3Description": "Écrivez une autre recette et obtenez la version améliorée",
+    "step4Title": "Post-test",
+    "step4Description": "Voyons si vous avez appris quelque chose! Vous recevrez une recette et serez invité à trouver des améliorations potentielles!"
   }
 }

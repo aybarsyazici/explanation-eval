@@ -23,7 +23,7 @@
   width: 100%;
   justify-content: center;
   align-items: center;
-  height: 1vh; /* Height of the hover target area */
+  height: 5vh; /* Height of the hover target area */
   z-index: 200; /* Above other content but below the Welcome screen when visible */
 }
 

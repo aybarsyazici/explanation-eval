@@ -8,6 +8,7 @@ import confetti from "canvas-confetti"; // Import the library
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
   sendUserResults: (res: BackendUserResultDetails) => void;
+  waitToFindAllWords?: boolean;
 };
 
 interface ClickableSentenceProps {
@@ -113,7 +114,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
 
 export const ImprovedRecipeDisplaySentenceScale: React.FC<
   ImprovedRecipeDisplayProps
-> = ({ improvedRecipe, sendUserResults }) => {
+> = ({ improvedRecipe, sendUserResults, waitToFindAllWords = true }) => {
   const [selectedSentences, setSelectedSentences] = useState<
     Map<number, string>
   >(new Map());
@@ -426,11 +427,13 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
           })}
         </div>
       </Form.Item>
-      {allWordsSelected && (
+      {(!waitToFindAllWords || allWordsSelected) && (
         <Form.Item>
-          <Typography.Text strong className={congratsClass}>
-            Congratulations! You reviewed all words!
-          </Typography.Text>
+          {waitToFindAllWords && (
+            <Typography.Text strong className={congratsClass}>
+              Congratulations! You found all words!
+            </Typography.Text>
+          )}
           <Button
             type="primary"
             className={submitButtonClass}

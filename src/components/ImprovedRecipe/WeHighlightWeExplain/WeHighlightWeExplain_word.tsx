@@ -16,6 +16,7 @@ import { IPageRef, TourContext } from "../..";
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
   sendUserResults: (res: BackendUserResultDetails) => void;
+  waitToFindAllWords?: boolean;
 };
 
 interface ClickableWordProps {
@@ -104,7 +105,7 @@ const ClickableWord: React.FC<ClickableWordProps> = React.memo(
 
 export const ImprovedRecipeDisplayWordScale: React.FC<
   ImprovedRecipeDisplayProps
-> = ({ improvedRecipe, sendUserResults }) => {
+> = ({ improvedRecipe, sendUserResults, waitToFindAllWords = true }) => {
   const [selectedWords, setSelectedWords] = useState<Map<number, string>>(
     new Map(),
   );
@@ -405,11 +406,13 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
           </div>
         </Form.Item>
       </span>
-      {allWordsSelected && (
+      {(!waitToFindAllWords || allWordsSelected) && (
         <Form.Item>
-          <Typography.Text strong className={congratsClass}>
-            Congratulations! You found all words!
-          </Typography.Text>
+          {waitToFindAllWords && (
+            <Typography.Text strong className={congratsClass}>
+              Congratulations! You found all words!
+            </Typography.Text>
+          )}
           <Button
             type="primary"
             className={submitButtonClass}

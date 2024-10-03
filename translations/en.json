@@ -5,21 +5,25 @@
   "WelcomeScreen": {
     "WelcomeMessage": "Welcome to Gen-AI Kitchen!",
     "PasswordMessage": "Write the password of the app version you want to switch to",
+    "PasswordLabel": "Password for the app version",
     "HoverMessage": "PS: (hover here to resummon me)",
-    "ChangeAppMessage": "Change app version",
+    "ChangeAppMessage": "Change app version or username",
     "SwitchLang": "Switch language to French",
     "Start": "Start cooking",
     "AboutUs": "About Us",
     "DarkMode": "Toggle Dark Mode",
     "SwitchToSentence": "Switch to sentence mode",
-    "SwitchToWord": "Switch to word mode"
+    "SwitchToWord": "Switch to word mode",
+    "UserIDMessage": "Enter the username you want to use",
+    "UserIDLabel": "Username",
+    "Save": "Save"
   },
   "AppVersion": {
-    "Change": "App version changed to: ",
-    "Invalid": "Invalid password"
+    "Change": "Username saved and App version changed to: ",
+    "Invalid": "Invalid password or username"
   },
   "Tour": {
-    "Change": "Change app version",
+    "Change": "Change app version or username",
     "Restart": "Restart tour",
     "Warning": "You are currently in the middle of a recipe. Please finish it before restarting the tour.",
     "WelcomeTitle": "Welcome!",
@@ -68,13 +72,13 @@
     "Warning": "Note this might result in a significant deviation from the original recipe."
   },
   "guider": {
-    "step1Title": "Your Recipe",
-    "step1Description": "Write your recipe! And click submit to get a new recipe!",
-    "step2Title": "Wait for it!",
-    "step2Description": "We are cooking your improved recipe! Please wait!",
-    "step3Title": "Mark the changes!",
-    "step3Description": "Your new recipe is here! Click on the words you think are new!",
-    "step4Title": "Done!",
-    "step4Description": "You are done!"
+    "step1Title": "Pre-test",
+    "step1Description": "You'll be given a recipe and asked to find potential improvements!",
+    "step2Title": "Use the app! #1",
+    "step2Description": "Write a recipe and get the improved version for it. Learn what makes a recipe good!",
+    "step3Title": "Use the app! #2",
+    "step3Description": "Write yet another recipe and get the improved version for it",
+    "step4Title": "Post test",
+    "step4Description": "Let's see if you have learned anything! You'll be given a recipe and asked to find potential improvements!"
   }
 }

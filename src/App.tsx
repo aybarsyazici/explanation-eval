@@ -2,20 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import { Col, Layout, Row, notification, theme } from "antd";
 const { Content } = Layout;
 import "./App.css";
-import { MainPage, ResultPage } from "./pages";
+import { AppFlow, ResultPage } from "./pages";
 import WelcomeScreen from "./pages/WelcomeScreen/WelcomeScreen";
 import { AppTour, TourContext } from "./components";
-import { BackendResponse } from "./types";
-import { AppVersionProvider } from "./helpers";
+import { AppVersionProvider, useWebSocketContext } from "./helpers";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { resources } from "../i18n.ts"
 
 type AppProps = {
   setDarkMode: (isDarkMode: boolean) => void;
-  setOnChildDataReceive: (fn: (data: BackendResponse) => void) => void;
-  setOnChildErrorReceive: (fn: (error: Event) => void) => void;
-  ws: WebSocket | null;
 };
 
 i18n
@@ -31,23 +27,14 @@ i18n
 
 const App: React.FC<AppProps> = ({
   setDarkMode,
-  setOnChildDataReceive,
-  setOnChildErrorReceive,
-  ws,
 }) => {
   const [appStep, setAppStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>("welcome"); // Set 'welcome' as initial state
   const [showWelcomeScreen, setShowWelcomeScreen] = useState<boolean>(true); // Set 'welcome' as initial state
-  // Has tour been completed before?
-  // Read tour from cookie
   const { setDoTour } = useContext(TourContext);
+  const { ws } = useWebSocketContext();
   useEffect(() => {
-    const cookieTour =
-      document.cookie
-        .split(";")
-        .find((cookie) => cookie.includes("tour"))
-        ?.split("=")[1] || "false";
-    setDoTour(cookieTour === "false");
+    setDoTour(false);
   }, [setDoTour]);
   // Does cookie for currentMode exist?
   // Read current mode from cookie
@@ -98,21 +85,18 @@ const App: React.FC<AppProps> = ({
           activeTab={activeTab}
           api={api}
         />
-        <Content style={{ padding: "2rem 0" }}>
+        <Content style={{ padding: "2rem 0rem", overflow: "auto"}}>
           <Row>
             <Col span={2} />
             <Col span={20}>
               {activeTab === "app" && ws !== null && (
-                <MainPage
+                <AppFlow
+                  appStep={appStep}
+                  setAppStep={setAppStep}
                   api={api}
                   setActivePage={handleMenuSelect}
                   currentMode={currentMode}
-                  setAppStep={setAppStep}
-                  setOnChildDataReceive={setOnChildDataReceive}
-                  setOnChildErrorReceive={setOnChildErrorReceive}
-                  ws={ws}
-                />
-              )}
+              />)}
               {activeTab === "about" && <p>About Us content</p>}
               {activeTab === "result" && (
                 <ResultPage setActivePage={handleMenuSelect} />

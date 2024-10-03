@@ -19,6 +19,7 @@ type ImprovedRecipeDisplayProps = {
   sendUserResults: (res: BackendUserResultDetails) => void;
   setRevealExtraWord: (fn: () => void) => void;
   setRevealAllWords: (fn: () => void) => void;
+  waitToFindAllWords?: boolean;
 };
 
 interface ClickableWordProps {
@@ -128,7 +129,7 @@ const ClickableWord: React.FC<ClickableWordProps> = React.memo(
       (prevProps.spanRef && prevProps.spanRef.current) ===
         (nextProps.spanRef && nextProps.spanRef.current)
     );
-  },
+  }
 );
 
 export const ImprovedRecipeDisplayWordScale: React.FC<
@@ -138,12 +139,13 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
   sendUserResults,
   setRevealExtraWord,
   setRevealAllWords,
+  waitToFindAllWords = true,
 }) => {
   const [selectedWords, setSelectedWords] = useState<Map<number, string>>(
-    new Map(),
+    new Map()
   );
   const [wordExplanations, setWordExplanation] = useState<Map<number, string>>(
-    new Map(),
+    new Map()
   );
   const [showPopover, setShowPopover] = useState<number | null>(null);
   const [allWordsSelected, setAllWordsSelected] = useState<boolean>(false);
@@ -262,7 +264,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
         }, 0);
       }
     },
-    [annotations, setSelectedWords, setShowPopover],
+    [annotations, setSelectedWords, setShowPopover]
   );
 
   const handleAccept = (currentExplanation: string, index: number) => {
@@ -295,7 +297,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
     setRevealExtraWord(() => () => {
       // Find index that is in annotations but not in selectedWords
       const index = Array.from(indices).find(
-        (index) => !selectedWords.has(index),
+        (index) => !selectedWords.has(index)
       );
       if (index !== undefined) {
         setSelectedWords(new Map(selectedWords.set(index, "correct")));
@@ -317,10 +319,10 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
   useEffect(() => {
     // Count the current accepted + declined word count
     const acceptedWords = Array.from(selectedWords.values()).filter(
-      (status) => status === "accepted",
+      (status) => status === "accepted"
     ).length;
     const declinedWords = Array.from(selectedWords.values()).filter(
-      (status) => status === "declined",
+      (status) => status === "declined"
     ).length;
     const totalWords = acceptedWords + declinedWords;
     if (totalWords === annotationSize && !allWordsSelected) {
@@ -486,16 +488,17 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
           </div>
         </Form.Item>
       </span>
-      {allWordsSelected && (
+      {(!waitToFindAllWords || allWordsSelected) && (
         <Form.Item>
-          <Typography.Text strong className={congratsClass}>
-            Congratulations! You found all words!
-          </Typography.Text>
+          {waitToFindAllWords && (
+            <Typography.Text strong className={congratsClass}>
+              Congratulations! You found all words!
+            </Typography.Text>
+          )}
           <Button
             type="primary"
             className={submitButtonClass}
             onClick={finishReview}
-            ref={refMap["result-wrapper"]}
           >
             Submit your results!
           </Button>

@@ -18,6 +18,7 @@ type ImprovedRecipeDisplayProps = {
   sendUserResults: (res: BackendUserResultDetails) => void;
   setRevealExtraWord: (fn: () => void) => void;
   setRevealAllWords: (fn: () => void) => void;
+  waitToFindAllWords?: boolean;
 };
 
 interface ClickableWordProps {
@@ -123,6 +124,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
   sendUserResults,
   setRevealExtraWord,
   setRevealAllWords,
+  waitToFindAllWords = true,
 }) => {
   const [selectedWords, setSelectedWords] = useState<Map<number, string>>(
     new Map(),
@@ -458,11 +460,13 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
           </div>
         </Form.Item>
       </span>
-      {allWordsSelected && (
+      {(!waitToFindAllWords || allWordsSelected) && (
         <Form.Item>
-          <Typography.Text strong className={congratsClass}>
-            Congratulations! You found all words!
-          </Typography.Text>
+          {waitToFindAllWords && (
+            <Typography.Text strong className={congratsClass}>
+              Congratulations! You found all words!
+            </Typography.Text>
+          )}
           <Button
             type="primary"
             className={submitButtonClass}

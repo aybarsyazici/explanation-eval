@@ -1,94 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import { ConfigProvider, theme } from "antd";
 import { catppuccinColors } from "../catppuccin_scheme";
 import { TourProvider } from "./components";
-import { BackendResponse } from "./types/BackendTypes";
-
+import { WebSocketProvider } from "./helpers/WebSocketContext.tsx";
+import "./index.css";
 const backendUrl = "wss://gelex-backend-a3bfadfb8f41.herokuapp.com/ws/example";
 // const backendUrl = 'ws://localhost:8000/ws/example';
 
-// Custom hook for WebSocket connection management
-const useWebSocket = (url: string) => {
-  const wsRef = useRef<WebSocket>(new WebSocket(url)); // Always initialized
-  const [isConnected, setIsConnected] = useState(false);
 
-  const childOnDataReceive = useRef<(data: BackendResponse) => void>(() => {});
-  const childOnErrorReceive = useRef<(error: Event) => void>(() => {});
-
-  const setChildOnDataReceive = (fn: (data: BackendResponse) => void) => {
-    childOnDataReceive.current = fn;
-  };
-
-  const setChildOnErrorReceive = (fn: (error: Event) => void) => {
-    childOnErrorReceive.current = fn;
-  };
-
-  useEffect(() => {
-    let shouldReconnect = true;
-
-    const connectWebSocket = () => {
-      const webSocket = wsRef.current;
-
-      webSocket.onopen = () => {
-        console.log("WebSocket connection established");
-        setIsConnected(true); // Mark as connected
-      };
-
-      webSocket.onmessage = (event) => {
-        if (event.data === "ping") {
-          console.log("Received ping message");
-          return;
-        }
-
-        const dataBackEnd = JSON.parse(event.data) as BackendResponse;
-        if (childOnDataReceive.current) {
-          childOnDataReceive.current(dataBackEnd);
-        }
-      };
-
-      webSocket.onerror = (error) => {
-        console.log("WebSocket error:", error);
-        if (childOnErrorReceive.current) {
-          childOnErrorReceive.current(error);
-        }
-      };
-
-      webSocket.onclose = (event) => {
-        console.log(
-          "WebSocket connection closed",
-          event.code,
-          event.reason,
-          "Reconnecting...",
-        );
-        setIsConnected(false); // Mark as disconnected
-        if (shouldReconnect) {
-          setTimeout(() => {
-            wsRef.current = new WebSocket(url); // Reinitialize the WebSocket object
-            connectWebSocket();
-          }, 3500); // Reconnect after a delay
-        }
-      };
-    };
-
-    connectWebSocket();
-
-    return () => {
-      shouldReconnect = false;
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, [url]); // Depend on the WebSocket URL
-
-  return {
-    ws: wsRef.current,
-    isConnected,
-    setChildOnDataReceive,
-    setChildOnErrorReceive,
-  };
-};
 
 const Main = () => {
   const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -102,16 +23,6 @@ const Main = () => {
   const themeColors = isDarkMode
     ? catppuccinColors.Mocha
     : catppuccinColors.Latte;
-
-  // Does the cookie userId exist?
-  // If not, generate random userId and set cookie
-  if (!document.cookie.split(";").find((cookie) => cookie.includes("userId"))) {
-    const userId = Math.random().toString(36).substring(2, 15);
-    document.cookie = `userId=${userId}`;
-  }
-
-  const { ws, setChildOnDataReceive, setChildOnErrorReceive } =
-    useWebSocket(backendUrl);
 
   return (
     <React.StrictMode>
@@ -148,14 +59,13 @@ const Main = () => {
           },
         }}
       >
-        <TourProvider>
-          <App
-            setDarkMode={setIsDarkMode}
-            setOnChildDataReceive={setChildOnDataReceive}
-            setOnChildErrorReceive={setChildOnErrorReceive}
-            ws={ws}
-          />
-        </TourProvider>
+        <WebSocketProvider backendUrl={backendUrl}>
+          <TourProvider>
+            <App
+              setDarkMode={setIsDarkMode}
+            />
+          </TourProvider>
+        </WebSocketProvider>
       </ConfigProvider>
     </React.StrictMode>
   );

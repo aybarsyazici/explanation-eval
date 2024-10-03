@@ -11,25 +11,24 @@ type RecipeFormProps = {
     improvementLevel: number,
     fromTour?: boolean,
   ) => void;
-  currentStep: number;
   api: NotificationInstance;
 };
 
 export const RecipeForm: React.FC<RecipeFormProps> = ({
   submitHit,
-  currentStep,
   api,
 }) => {
   const [recipe, setRecipe] = useState<string>("");
   const [improvementLevel, setImprovementLevel] = useState<number>(0);
   const [recentlyShown, setRecentlyShown] = useState<boolean>(false);
+  const [inputsDisabled, setInputsDisabled] = useState<boolean>(false);
   const { t } = useTranslation();
   const handleSubmit = (fromTour?: boolean) => {
     console.log("Submitting recipe: ", recipe);
     submitHit(recipe, improvementLevel, fromTour);
+    setInputsDisabled(true);
   };
 
-  const inputsDisabled = currentStep != 0;
 
   const formatter = (value: number | undefined) => {
     if (value === undefined) {

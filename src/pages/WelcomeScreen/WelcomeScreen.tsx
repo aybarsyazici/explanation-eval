@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef } from "react";
-import { List, Button, Typography, Modal, Input } from "antd";
+import { List, Button, Typography, Modal, Input, Space } from "antd";
 import {
   ArrowUpOutlined,
   CoffeeOutlined,
@@ -7,7 +7,6 @@ import {
   GlobalOutlined,
   InfoCircleOutlined,
   PoweroffOutlined,
-  QuestionCircleOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 import "./WelcomeScreen.css";
@@ -37,6 +36,13 @@ const passwordDefinitions = {
   appv4oume: 3,
 };
 
+const appVersionToPassword = {
+  0: "appv1xhyu",
+  1: "appv2bpog",
+  2: "appv3hiec",
+  3: "appv4oume",
+};
+
 const { Text } = Typography;
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
@@ -51,21 +57,33 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   appStep,
 }) => {
   const switchText = currentMode === "word" ? "sentence" : "word";
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [modalText, setModalText] = React.useState("");
+  // Use the current app's password as the default modal test
+  const { changeAppVersion, appVersion } = useAppVersionContext();
+  const [modalText, setModalText] = React.useState(
+      //@ts-ignore
+    appVersion !== -1 ? appVersionToPassword[appVersion] : "",
+  );
+  // Does the userId cookie exists? If so find it and set it to the userId variable
+  const [userId, setUserId] = React.useState(
+    document.cookie
+      .split(";")
+      .find((cookie) => cookie.includes("userId"))
+      ?.split("=")[1] || "",
+  );
+  // Set modal to open if userID or modalText is empty
+  const [isModalOpen, setIsModalOpen] = React.useState(
+    userId === "" || modalText === "",
+  );
   const { t, i18n } = useTranslation();
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const { changeAppVersion } = useAppVersionContext();
   const handleOk = () => {
-    if (modalText in passwordDefinitions) {
-      console.log(
-        //@ts-ignore
-        `Switching to appVersion=${passwordDefinitions[modalText]} mode`,
-      );
+    if (modalText in passwordDefinitions && userId !== "") {
       //@ts-ignore
       changeAppVersion(passwordDefinitions[modalText]);
+      // Save the userID to a cookie
+      document.cookie = `userId=${userId}`;
       api.success({
         message: "Success",
         description:
@@ -84,6 +102,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     }
   };
   const handleCancel = () => {
+    // Check if the password 
     setIsModalOpen(false);
   };
   // Add one more element to the menuItems array
@@ -100,7 +119,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       key: "lang-switch", label: t("WelcomeScreen.SwitchLang"), icon: <GlobalOutlined />,
     },
     { key: "modal", label:  t("Tour.Change"), icon: <PoweroffOutlined /> },
-    { key: "tour", label: t("Tour.Restart"), icon: <QuestionCircleOutlined /> },
   ];
   const { startTour, doTour, setDoTour, currentPage, setCurrentPage } =
     useContext(TourContext);
@@ -246,14 +264,25 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       <Modal
         title={t("WelcomeScreen.ChangeAppMessage")}
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
+        maskClosable={false}
+        closable={false}
+        footer={<Button onClick={handleOk}>{t("WelcomeScreen.Save")}</Button>}
       >
-        <Input
-          placeholder={t("WelcomeScreen.PasswordMessage")}
-          value={modalText}
-          onChange={(e) => setModalText(e.target.value)}
-        />
+        <Space direction="vertical" style={{ display: 'flex' }}>
+          <Input
+            addonAfter={t("WelcomeScreen.UserIDLabel")}
+            placeholder={t("WelcomeScreen.UserIDMessage")}
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+          />
+          <Input
+            addonAfter={t("WelcomeScreen.PasswordLabel")}
+            placeholder={t("WelcomeScreen.PasswordMessage")}
+            value={modalText}
+            onChange={(e) => setModalText(e.target.value)}
+          />
+        </Space>
       </Modal>
       <Text className="menu-info-text">
         <ArrowUpOutlined /> {t("WelcomeScreen.HoverMessage")}  <ArrowUpOutlined />

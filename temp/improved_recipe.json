@@ -1,0 +1,85 @@
+{
+    "example_recipe": "Ingredients:\n- 1 pound of hamburger meat\n- 16 oz chicken broth\n- 1 bag of frozen peas and carrots (or one can of each)\n- 1 tablespoon ketchup\n- Worcestershire sauce to taste\n- Garlic salt to taste\n- Pepper to taste\n- Onion powder to taste\n- Potatoes\n- Butter\n- Salt\n- 1 cup of heavy cream\n- Oil for greasing\n\nInstructions:\n1. Preheat the oven to 375°F.\n2. Brown 1 pound of hamburger meat in a skillet. Drain the grease and set aside.\n3. In a saucepan, combine the hamburger meat with 16 oz chicken broth, a bag of frozen peas and carrots (or one can of each), a tablespoon of ketchup, Worcestershire sauce, garlic salt, pepper, and onion powder to taste. Bring to a boil, then reduce the heat and let it simmer until most of the liquid is gone.\n4. While the meat mixture is simmering, peel and cut the potatoes. Boil them in a pot until they are tender when pierced with a fork.\n5. Drain the potatoes and return them to the pot. Mash the potatoes and add butter, salt, pepper, and 1 cup of heavy cream. Stir the potatoes and set aside.\n6. Once the meat mixture has reduced and most of the liquid is gone, pour it into a greased 13x9 pan using oil.\n7. Spoon the mashed potatoes over the meat mixture.\n8. Bake in the preheated oven for about 35-45 minutes or until the top of the mashed potato peaks are brown.",
+    "annotations": {
+        "simmer": [
+            [
+                "simmer",
+                137
+            ]
+        ],
+        "simmering,": [
+            [
+                "simmer",
+                151
+            ]
+        ],
+        "Instructions:": [
+            [
+                "instruct",
+                64
+            ]
+        ],
+        "Oil": [
+            [
+                "oil",
+                61
+            ]
+        ],
+        "oil.": [
+            [
+                "oil",
+                223
+            ]
+        ],
+        "saucepan,": [
+            [
+                "saucepan",
+                90
+            ]
+        ],
+        "reduce": [
+            [
+                "reduc",
+                131
+            ]
+        ],
+        "reduced": [
+            [
+                "reduc",
+                207
+            ]
+        ],
+        "Ingredients:": [
+            [
+                "ingredi",
+                0
+            ]
+        ],
+        "Preheat": [
+            [
+                "preheat",
+                66
+            ]
+        ],
+        "preheated": [
+            [
+                "preheat",
+                237
+            ]
+        ]
+    },
+    "explanations_per_word": {
+        "simmer": "Simmering is a cooking technique where food is cooked gently just below the boiling point. It allows flavors to meld together and reduces the liquid without overcooking the ingredients.",
+        "simmering,": "Simmering is a cooking technique where food is cooked gently just below the boiling point. It allows flavors to meld together and reduces the liquid without overcooking the ingredients.",
+        "Instructions:": "Having a separate section for instructions provides a clear, step-by-step guide to preparing the dish, which is crucial for successful execution of the recipe.",
+        "Oil": "Using oil to grease the pan prevents the food from sticking, making it easier to serve and clean up afterward.",
+        "oil.": "Using oil to grease the pan prevents the food from sticking, making it easier to serve and clean up afterward.",
+        "saucepan,": "A saucepan is used for cooking the meat mixture, as it allows for even heat distribution and is suitable for simmering and reducing liquids.",
+        "reduce": "Reducing is the process of thickening and intensifying the flavor of a liquid mixture by simmering or boiling, which is essential for achieving the right consistency in the meat mixture.",
+        "reduced": "Reducing is the process of thickening and intensifying the flavor of a liquid mixture by simmering or boiling, which is essential for achieving the right consistency in the meat mixture.",
+        "Ingredients:": "Separating the ingredients from the instructions helps in organizing the recipe, making it easier to follow and ensuring that all necessary components are prepared before starting the cooking process.",
+        "Preheat": "Preheating the oven ensures that the dish starts cooking at the correct temperature, which is crucial for even cooking and achieving the desired texture and color.",
+        "preheated": "Preheating the oven ensures that the dish starts cooking at the correct temperature, which is crucial for even cooking and achieving the desired texture and color."
+    },
+    "ingredients_seperated": false
+}
