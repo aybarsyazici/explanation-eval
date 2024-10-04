@@ -197,10 +197,26 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
     sendUserResults(res);
   };
 
+  const { indices, annotationSize } = useMemo(() => {
+    const indices = new Set<number>();
+    Object.values(annotations).forEach((tuples) => {
+      tuples.forEach(([, index]) => indices.add(index));
+    });
+    const newSelectedWords = new Map(selectedWords);
+    indices.forEach((index) => {
+      if (!selectedWords.has(index)) {
+        newSelectedWords.set(index, "correct");
+      }
+    });
+    setSelectedWords(newSelectedWords);
+    return { indices, annotationSize: indices.size };
+  }, [annotations]);
+
   const toggleWordSelection = useCallback(
-    (word: string, index: number) => {
-      // Check if word is in annotations
-      if (annotations[word]?.some(([_, wordIndex]) => wordIndex === index)) {
+    (_: string, index: number) => {
+      // Check if for all annotations, the wordIndex exists somewhere
+      console.log("clicked on", index, indices.has(index));
+      if (indices && indices.has(index)) {
         setSelectedWords((prevSelectedWords) => {
           const newSelectedWords = new Map(prevSelectedWords);
           newSelectedWords.set(index, "correct");
@@ -222,7 +238,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
         }, 0);
       }
     },
-    [annotations, setSelectedWords, setShowPopover],
+    [indices, annotations, setSelectedWords, setShowPopover],
   );
 
   const handleAccept = (index: number) => {
@@ -230,20 +246,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
     setShowPopover(null);
   };
 
-  const { annotationSize } = useMemo(() => {
-    const indices = new Set<number>();
-    Object.values(annotations).forEach((tuples) => {
-      tuples.forEach(([, index]) => indices.add(index));
-    });
-    const newSelectedWords = new Map(selectedWords);
-    indices.forEach((index) => {
-      if (!selectedWords.has(index)) {
-        newSelectedWords.set(index, "correct");
-      }
-    });
-    setSelectedWords(newSelectedWords);
-    return { indices, annotationSize: indices.size };
-  }, [annotations]);
+
 
   useEffect(() => {
     // Count the current accepted + declined word count

@@ -379,11 +379,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         const currentSentenceIndex = sentenceIndex;
         sentenceIndex += 1;
         // Iterate over the annotations and find the words that are in the sentence
-        const wordAnnotations = Object.entries(annotations).filter(
-          ([word, _]) => {
-            return wordsInSentence.includes(word);
-          }
-        );
+        const wordAnnotations = Object.entries(annotations);
         let wordIndexes: { word: string; wordIndex: number }[];
         if (wordAnnotations !== undefined) {
           wordIndexes = wordAnnotations

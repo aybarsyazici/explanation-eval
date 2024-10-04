@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Form, Popover, Button, Typography, theme } from "antd";
+import { Form, Popover, Button, Typography, theme, Divider } from "antd";
 import "./ImprovedRecipeDisplay.css";
 import { BackendUserResultDetails, ImprovedRecipe } from "../../../types";
 import { DislikeOutlined, LikeOutlined } from "@ant-design/icons";
@@ -22,8 +22,9 @@ interface ClickableSentenceProps {
   showPopover: boolean;
   setShowPopover: (index: number | null) => void;
   getSentenceStyle?: (index: number) => React.CSSProperties;
-  wordsIncluded: { word: string; wordIndex: number }[];
+  wordsIncluded: { word: string; wordIndex: number; origWord: string }[];
   sentenceStyle?: React.CSSProperties;
+  sentenceExplanation: string;
 }
 
 type BreakElementProps = {};
@@ -46,12 +47,38 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     showPopover,
     setShowPopover,
     sentenceStyle,
+    sentenceExplanation,
   }) => {
+    // Split at \n\n and add a divider between each explanation
+    const explanationParts = sentenceExplanation
+      .split("\n\n")
+      .filter((part) => part !== "");
     return (
       <Popover
         content={
           <div>
-            <p>Explanation for {sentence}</p>
+            {explanationParts.map((part, tempIndex) => {
+              if (tempIndex === explanationParts.length - 1) {
+                return (
+                  <Typography.Paragraph
+                    key={`explanation-${tempIndex}-${index}`}
+                  >
+                    {part}
+                  </Typography.Paragraph>
+                );
+              } else {
+                return (
+                  <>
+                    <Typography.Paragraph
+                      key={`explanation-${tempIndex}-${index}`}
+                    >
+                      {part}
+                    </Typography.Paragraph>
+                    <Divider key={`divider-${tempIndex}-${index}`}/>
+                  </>
+                );
+              }
+            })}
             <div className="like-dislike-container">
               <Button className="like-button" onClick={() => onAccept(index)}>
                 <LikeOutlined />
@@ -343,11 +370,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
           const currentSentenceIndex = sentenceIndex;
           sentenceIndex += 1;
           // Iterate over the annotations and find the words that are in the sentence
-          const wordAnnotations = Object.entries(annotations).filter(
-            ([word, _]) => {
-              return wordsInSentence.includes(word);
-            }
-          );
+          const wordAnnotations = Object.entries(annotations);
           let wordIndexes: { word: string; wordIndex: number }[];
           if (wordAnnotations !== undefined) {
             wordIndexes = wordAnnotations
@@ -441,6 +464,15 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         <div style={{ whiteSpace: "pre-wrap", userSelect: "text" }}>
           {elements.map((element, index) => {
             if ("sentence" in element) {
+              let currentSentenceExplanation = "";
+              // Iterate over the wordIndexes and add each of their explanations
+              element.wordsIncluded.forEach(({ origWord }) => {
+                const explanation = improvedRecipe.explanations[origWord];
+                if (explanation) {
+                  currentSentenceExplanation +=
+                    origWord + ": " + explanation + "\n\n";
+                }
+              });
               return (
                 <ClickableSentence
                   key={`sentence-${index}`}
@@ -448,6 +480,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                   showPopover={showPopover === element.index}
                   sentenceStyle={getSentenceStyle(element.index)}
                   setShowPopover={setShowPopover}
+                  sentenceExplanation={currentSentenceExplanation}
                 />
               );
             } else {

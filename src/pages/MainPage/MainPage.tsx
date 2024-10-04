@@ -61,7 +61,8 @@ export const MainPage: React.FC<MainPageProps> = ({
   const { appVersion } = useAppVersionContext();
 
   const { ws, setOnChildDataReceive, setOnChildErrorReceive } = useWebSocketContext();
-  
+  const { i18n } = useTranslation();
+
   useEffect(() => {
     // Define the function that the parent will call
     const handleData = (data: BackendResponse) => {
@@ -121,7 +122,6 @@ export const MainPage: React.FC<MainPageProps> = ({
     const rule_counts = [3, 5, 10, 20, 30];
     // console.log(`Submitting hit with recipe: ${recipe} and improvementLevel: ${improvementLevel}, num_rules: ${rule_counts[improvementLevel]}`)
     setimprovedRecipeLoading(true);
-    const { i18n } = useTranslation();
     // Read userId from cookie
     const userId = document.cookie
       .split(";")
@@ -135,6 +135,7 @@ export const MainPage: React.FC<MainPageProps> = ({
         user_id: userId,
         language: i18n.language,
       } as BackendInput);
+      console.log("Sending data through WebSocket:", dataToSend);
 
       // Send data through WebSocket
       ws.send(dataToSend);

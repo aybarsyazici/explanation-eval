@@ -43,15 +43,10 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     sentenceExplanation,
     sentenceStyle,
   }) => {
-    console.log(`Got sentence explanation ${sentenceExplanation}`);
     // Split at \n\n and add a divider between each explanation
     const explanationParts = sentenceExplanation
       .split("\n\n")
       .filter((part) => part !== "");
-    console.log(
-      `Split explanation into ${explanationParts.length} parts`,
-      explanationParts
-    );
     return (
       <Popover
         className="explanation-popover"
@@ -286,7 +281,6 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     });
     setShowPopover(null);
   }, []);
-  console.log("Explanations received", improvedRecipe.explanations);
   useEffect(() => {
     let sentenceIndex = 0; // Tracks the index of sentences
     const wordIndexToSentenceIndex = new Map<number, number>();
@@ -311,11 +305,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         const currentSentenceIndex = sentenceIndex;
         sentenceIndex += 1;
         // Iterate over the annotations and find the words that are in the sentence
-        const wordAnnotations = Object.entries(annotations).filter(
-          ([word, _]) => {
-            return wordsInSentence.includes(word);
-          }
-        );
+        const wordAnnotations = Object.entries(annotations);
         let wordIndexes: { word: string; wordIndex: number }[];
         if (wordAnnotations !== undefined) {
           wordIndexes = wordAnnotations
@@ -333,7 +323,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
             )
             .flat()
             .filter((item): item is { word: string; wordIndex: number; origWord: string } => item !== null);
-
+          
           // Map the wordIndexes to the sentenceIndex
           // console.log('Sentence', currentSentenceIndex, 'has words', wordAnnotations, 'between Indexes', wordIndexCounter, 'and', wordIndexCounter + wordsInSentence.length, wordsInSentence)
           wordIndexes.forEach(({ word: _, wordIndex }) => {
@@ -344,7 +334,6 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
               wordIndexToSentenceIndex.set(wordIndex, currentSentenceIndex);
             }
           });
-          console.log("WordIndexes", wordIndexes);
           if (wordIndexes.length > 0) {
             totalSentenceCountTemp += 1;
           }
@@ -413,7 +402,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                 const explanation = improvedRecipe.explanations[origWord];
                 if (explanation) {
                   currentSentenceExplanation +=
-                    explanation + "\n\n";
+                    origWord + ": " + explanation + "\n\n";
                 }
               });
               return (
