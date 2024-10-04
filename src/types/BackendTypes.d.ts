@@ -30,3 +30,14 @@ export type BackendUserResult = {
   event: string;
   details: BackendUserResultDetails;
 };
+
+export type UserTestResult = {
+  user: string;
+  event: string;
+  details: UserTestResultDetails;
+}
+
+export type UserTestResultsDetails = {
+  original_recipe: string;
+  identified_improvements: string;
+}

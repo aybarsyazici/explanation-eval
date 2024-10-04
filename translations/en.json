@@ -43,8 +43,8 @@
     "RestartTourTitle": "Restart Tour",
     "RestartTourContent": "You can always restart the tour by clicking here!"
   },
-  "ResultPage": {
-    "End": "Great, you're all done! Thank you. You'll be redirected to the homepage "
+  "ResultsPage": {
+    "End": "Great, you're all done! Thank you. You'll be redirected to the homepage in: "
   },
   "MainPage": {
     "TitleImproveRecipe": "Your improved recipe will be here!",
@@ -80,5 +80,8 @@
     "step3Description": "Write yet another recipe and get the improved version for it",
     "step4Title": "Post test",
     "step4Description": "Let's see if you have learned anything! You'll be given a recipe and asked to find potential improvements!"
+  },
+  "LearningTest": {
+    "Submit": "Finish Review"
   }
 }

@@ -4,3 +4,4 @@ export * from "./ImprovedRecipe";
 export * from "./Guider/Guider";
 export * from "./AppTour/AppTour";
 export * from "./AppTour/TourContext";
+export * from "./LearningTest/LearningTest";

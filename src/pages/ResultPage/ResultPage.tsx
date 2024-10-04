@@ -31,7 +31,7 @@ export const ResultPage: React.FC<ResultPageProps> = ({ setActivePage }) => {
   return (
     <Result
       icon={<SmileOutlined />}
-      title={t("ResultsPage.End")}
+      title={t("ResultsPage.End") + redirectTimer}
       extra={
         <Button type="primary" onClick={goToHomepage}>
           Go now!

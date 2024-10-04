@@ -28,7 +28,6 @@ i18n
 const App: React.FC<AppProps> = ({
   setDarkMode,
 }) => {
-  const [appStep, setAppStep] = useState(0);
   const [activeTab, setActiveTab] = useState<string>("welcome"); // Set 'welcome' as initial state
   const [showWelcomeScreen, setShowWelcomeScreen] = useState<boolean>(true); // Set 'welcome' as initial state
   const { setDoTour } = useContext(TourContext);
@@ -46,6 +45,21 @@ const App: React.FC<AppProps> = ({
   const [currentMode, setCurrentMode] = useState<string>(cookieCurrentMode); // Set 'word' as initial state
   // Set the cookie
   document.cookie = `currentMode=${currentMode}`;
+
+  // Does cookie for appStep exist?
+  // Read appStep from cookie
+  const cookieAppStep =
+    document.cookie
+      .split(";")
+      .find((cookie) => cookie.includes("appStep"))
+      ?.split("=")[1] || "0";
+  const [appStep, setAppStep] = useState<number>(parseInt(cookieAppStep)); // Set '0' as initial state
+
+  useEffect(()=>{
+    // Whenever the appStep changes, update the cookie
+    document.cookie = `appStep=${appStep}`;
+  },[appStep]);
+
 
   // Read dark mode from config
   const { theme: themeToken } = theme.useToken();

@@ -186,6 +186,12 @@ export const MainPage: React.FC<MainPageProps> = ({
         response.json().then((data) => {
           console.log("Trace Data:", data);
           // Go to results page.
+          // Reset all the states
+          setOriginalRecipe("");
+          setImprovedRecipe(undefined);
+          setimprovedRecipeLoading(false);
+          setRevealExtraWord(() => () => {});
+          setRevealAllWords(() => () => {});
           setAppStep();
         }),
       )
