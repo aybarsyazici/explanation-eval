@@ -8,8 +8,6 @@ import { useMemo } from "react";
 import { MainPage } from "../MainPage/MainPage";
 import { useAppVersionContext } from "../../helpers";
 import {
-  BackendUserResult,
-  BackendUserResultDetails,
   UserTestResult,
   UserTestResultsDetails,
 } from "../../types";
@@ -32,7 +30,7 @@ export const AppFlow = ({
 }: AppFlowProps) => {
   const { appVersion } = useAppVersionContext();
   // placeholder, replace with actual data
-  
+
   const finishReview = (
     results: UserTestResultsDetails,
     eventName: string,
