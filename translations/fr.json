@@ -44,7 +44,8 @@
     "RestartTourContent": "Vous pouvez toujours redémarrer la visite en cliquant ici!"
   },
   "ResultsPage": {
-    "End": "Super, vous avez terminé! Merci. Vous serez redirigé vers la page d'accueil dans: "
+    "End": "Super, vous avez terminé! Merci. Vous serez redirigé vers la page d'accueil dans: ",
+    "Code": "Votre code à entrer dans Qualtrics est : ILOVEML"
   },
   "MainPage": {
     "TitleImproveRecipe": "Votre recette améliorée sera ici!",
@@ -82,6 +83,7 @@
     "step4Description": "Voyons si vous avez appris quelque chose! Vous recevrez une recette et serez invité à trouver des améliorations potentielles!"
   },
   "LearningTest": {
-    "Submit": "Terminer la révision"
+    "Submit": "Terminer la révision",
+    "CardTitle": "Recette Exemple"
   }
 }

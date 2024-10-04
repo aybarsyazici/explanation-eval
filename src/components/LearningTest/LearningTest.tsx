@@ -1,24 +1,33 @@
 import { Button, Card, Col, Input, Row, Space, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import improved_example from "../../../temp/improved_recipe.json";
+import test_example from "../../../temp/test_examples.json";
 import { UserTestResultsDetails } from "../../types";
+import { NotificationInstance } from "antd/es/notification/interface";
 
 type LearningTestProps = {
   finishEvent: (result: UserTestResultsDetails) => void;
+  version: "pre" | "post";
+  api: NotificationInstance;
 };
 
-export const LearningTest: React.FC<LearningTestProps> = ({ finishEvent }) => {
-  const [improvedRecipeLoading, setimprovedRecipeLoading] = useState(true);
-  const [testExample, setTestExample] = useState<string>();
+export const LearningTest: React.FC<LearningTestProps> = ({ finishEvent, version, api }) => {
+  const [testExample, setTestExample] = useState<string>(
+    version === "pre" ? test_example.pre_test : test_example.post_test
+  );
   const [reviewText, setReviewText] = useState<string>("");
   const { t } = useTranslation();
+  console.log("Mounted Learning Test")
 
   useEffect(() => {
-    // TODO fetch example
     console.log("Fetching pre-test example");
-    setTestExample(improved_example.example_recipe);
-    setimprovedRecipeLoading(false);
+    if (version === "post"){
+      api.info({
+        message: "Post-test",
+        description: t("LearningTest.PostTestDescription"),
+        placement: "top",
+      });
+    }
   }, []);
 
   const exampleTestProcessed = useMemo(
@@ -59,8 +68,7 @@ export const LearningTest: React.FC<LearningTestProps> = ({ finishEvent }) => {
       <Col span={4} />
       <Col span={10}>
         <Card
-          title={t("MainPage.ImprovedRecipe")}
-          loading={improvedRecipeLoading}
+          title={t("LearningTest.CardTitle")}
         >
           {testExample && exampleTestProcessed}
         </Card>

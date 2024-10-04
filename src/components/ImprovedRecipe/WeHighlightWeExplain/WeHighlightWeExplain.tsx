@@ -286,7 +286,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     });
     setShowPopover(null);
   }, []);
-
+  console.log("Explanations received", improvedRecipe.explanations);
   useEffect(() => {
     let sentenceIndex = 0; // Tracks the index of sentences
     const wordIndexToSentenceIndex = new Map<number, number>();
@@ -319,14 +319,20 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         let wordIndexes: { word: string; wordIndex: number }[];
         if (wordAnnotations !== undefined) {
           wordIndexes = wordAnnotations
-            .map(([origWord, wordAnnotations]) => {
-              return wordAnnotations.map(([word, wordIndex]) => ({
-                word: word,
-                wordIndex: wordIndex,
-                origWord: origWord,
-              }));
-            })
-            .flat();
+            .map(([origWord, wordAnnotations]) => 
+              wordAnnotations.map(([word, wordIndex]) => {
+                if(wordIndex >= wordIndexCounter && wordIndex < wordIndexCounter + wordsInSentence.length){
+                  return {
+                    word: word,
+                    wordIndex: wordIndex,
+                    origWord: origWord,
+                  };
+                }
+                return null;
+              })
+            )
+            .flat()
+            .filter((item): item is { word: string; wordIndex: number; origWord: string } => item !== null);
 
           // Map the wordIndexes to the sentenceIndex
           // console.log('Sentence', currentSentenceIndex, 'has words', wordAnnotations, 'between Indexes', wordIndexCounter, 'and', wordIndexCounter + wordsInSentence.length, wordsInSentence)
@@ -338,7 +344,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
               wordIndexToSentenceIndex.set(wordIndex, currentSentenceIndex);
             }
           });
-
+          console.log("WordIndexes", wordIndexes);
           if (wordIndexes.length > 0) {
             totalSentenceCountTemp += 1;
           }
@@ -407,7 +413,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                 const explanation = improvedRecipe.explanations[origWord];
                 if (explanation) {
                   currentSentenceExplanation +=
-                    origWord + ": " + explanation + "\n\n";
+                    explanation + "\n\n";
                 }
               });
               return (

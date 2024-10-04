@@ -104,6 +104,8 @@ export const AppFlow = ({
             finishEvent={(result: UserTestResultsDetails) => {
               finishReview(result, "preTest", () => setAppStep(1));
             }}
+            version="pre"
+            api={api}
           />
         );
       case 1:
@@ -135,6 +137,8 @@ export const AppFlow = ({
                 setAppStep(0);
               });
             }}
+            version="post"
+            api={api}
           />
         );
     }

@@ -1,16 +1,13 @@
-import React, { useContext, useEffect, useMemo, useRef } from "react";
+import React from "react";
 import { List, Button, Typography, Modal, Input, Space } from "antd";
 import {
   ArrowUpOutlined,
   CoffeeOutlined,
-  EditOutlined,
   GlobalOutlined,
-  InfoCircleOutlined,
   PoweroffOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 import "./WelcomeScreen.css";
-import { IPageRef, TourContext } from "../../components";
 import { NotificationInstance } from "antd/es/notification/interface";
 import { useAppVersionContext } from "../../helpers";
 import { useTranslation } from "react-i18next";
@@ -56,7 +53,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   api,
   appStep,
 }) => {
-  const switchText = currentMode === "word" ? "sentence" : "word";
   // Use the current app's password as the default modal test
   const { changeAppVersion, appVersion } = useAppVersionContext();
   const [modalText, setModalText] = React.useState(
@@ -108,20 +104,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   // Add one more element to the menuItems array
   const myMenuItems = [
     { key: "app", label: t("WelcomeScreen.Start"), icon: <CoffeeOutlined /> },
-    { key: "about", label: t("WelcomeScreen.AboutUs"), icon: <InfoCircleOutlined /> },
     { key: "toggle", label: t("WelcomeScreen.DarkMode"), icon: <SettingOutlined /> },
-    {
-      key: "sentence-mode",
-      label: switchText === "sentence" ? t("WelcomeScreen.SwitchToSentence") : t("WelcomeScreen.SwitchToWord"),
-      icon: <EditOutlined />,
-    },
     {
       key: "lang-switch", label: t("WelcomeScreen.SwitchLang"), icon: <GlobalOutlined />,
     },
     { key: "modal", label:  t("Tour.Change"), icon: <PoweroffOutlined /> },
   ];
-  const { startTour, doTour, setDoTour, currentPage, setCurrentPage } =
-    useContext(TourContext);
 
   const onClickHandler = (key: string) => {
     switch (key) {
@@ -129,9 +117,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         toggleDarkMode();
         break;
       case "sentence-mode":
-        if (!doTour) {
           setCurrentMode && setCurrentMode(currentMode === "word" ? "sentence" : "word");
-        }
         break;
       case "tour":
         if (activeTab === "app" && appStep !== 0) {
@@ -143,8 +129,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           return;
         }
         setCurrentMode && setCurrentMode("word");
-        setDoTour(true);
-        setCurrentPage(-1);
         break;
       case "modal":
         showModal();
@@ -153,108 +137,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         i18n.changeLanguage(i18n.language === "en" ? "fr" : "en");
         break;
       default:
-        if (key !== "app" && doTour) return;
+        if (key !== "app") return;
         onMenuSelect(key);
         break;
     }
   };
 
-  // Ref Map
-  const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
-  refMap["welcome"] = useRef<HTMLDivElement>(null);
-  refMap["app"] = useRef<HTMLDivElement>(null);
-  refMap["about"] = useRef<HTMLDivElement>(null);
-  refMap["toggle"] = useRef<HTMLDivElement>(null);
-  refMap["sentence-mode"] = useRef<HTMLDivElement>(null);
-  refMap["tour"] = useRef<HTMLDivElement>(null);
-  refMap["modal"] = useRef<HTMLDivElement>(null);
-  refMap["empty"] = useRef<HTMLDivElement>(null);
-
-  const steps = useMemo(() => {
-    const refs: IPageRef[] = [];
-    refs.push({
-      title: t("Tour.WelcomeTitle"),
-      content: t("Tour.WelcomeContent"),
-      target: refMap.empty,
-      onClose: () => {
-        refMap.app.current?.click();
-        setCurrentPage(1);
-      },
-    });
-    refs.push({
-      title: t("Tour.WelcomeScreenTitle"),
-      content: t("Tour.WelcomeScreenContent"),
-      target: refMap.welcome,
-      onClose: () => {
-        refMap.app.current?.click();
-        setCurrentPage(1);
-      },
-    });
-    refs.push({
-      title: t("Tour.StartCookingTitle"),
-      content: t("Tour.StartCookingContent"),
-      target: refMap.app,
-      onClose: () => {
-        refMap.app.current?.click();
-        setCurrentPage(1);
-      },
-    });
-    refs.push({
-      title: t("Tour.AboutUsTitle"),
-      content: t("Tour.AboutUsContent"),
-      target: refMap.about,
-      onClose: () => {
-        refMap.app.current?.click();
-        setCurrentPage(1);
-      },
-    });
-    refs.push({
-      title: t("Tour.ToggleDarkModeTitle"),
-      content: t("Tour.ToggleDarkModeContent"),
-      target: refMap.toggle,
-      onClose: () => {
-        refMap.app.current?.click();
-        setCurrentPage(1);
-      },
-    });
-    refs.push({
-      title: t("Tour.SwitchToSentenceModeTitle"),
-      content: t("Tour.SwitchToSentenceModeContent"),
-      target: refMap["sentence-mode"],
-      onClose: () => {
-        setCurrentPage(1);
-        refMap.app.current?.click();
-      },
-    });
-    refs.push({
-      title: t("Tour.ChangeAppVersionTitle"),
-      content: t("Tour.ChangeAppVersionContent"),
-      target: refMap.modal,
-      onClose: () => {
-        setCurrentPage(1);
-        refMap.app.current?.click();
-      },
-    });
-    refs.push({
-      title: t("Tour.RestartTourTitle"),
-      content: t("Tour.RestartTourContent"),
-      target: refMap.tour,
-      onClose: () => {
-        setCurrentPage(1);
-        refMap.app.current?.click();
-      },
-    });
-    return refs;
-  }, [refMap, setCurrentPage]);
-
-
-  useEffect(() => {
-    if (!doTour) return;
-    if (currentPage === -1) {
-      startTour(steps);
-      setCurrentPage(0);
-    }
-  }, [startTour, doTour, currentPage, setCurrentPage]);
 
   return (
     <div
@@ -287,7 +175,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       <Text className="menu-info-text">
         <ArrowUpOutlined /> {t("WelcomeScreen.HoverMessage")}  <ArrowUpOutlined />
       </Text>
-      <span ref={refMap.welcome as React.RefObject<HTMLDivElement>}>
+      <span>
         <List
           header={<div>{t("WelcomeScreen.WelcomeMessage")}</div>}
           dataSource={myMenuItems}
@@ -301,7 +189,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                 onClick={() => onClickHandler(item.key)}
                 className="menu-item-button"
                 id={"welcome-menu-" + item.key}
-                ref={refMap[item.key]}
               >
                 {item.label}
               </Button>

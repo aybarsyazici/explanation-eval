@@ -44,7 +44,8 @@
     "RestartTourContent": "You can always restart the tour by clicking here!"
   },
   "ResultsPage": {
-    "End": "Great, you're all done! Thank you. You'll be redirected to the homepage in: "
+    "End": "Great, you're all done! Thank you. You'll be redirected to the homepage in: ",
+    "Code": "Your code to enter to Qualtrics is: ILOVEML"
   },
   "MainPage": {
     "TitleImproveRecipe": "Your improved recipe will be here!",
@@ -72,16 +73,18 @@
     "Warning": "Note this might result in a significant deviation from the original recipe."
   },
   "guider": {
-    "step1Title": "Pre-test",
+    "step1Title": "Warm-up",
     "step1Description": "You'll be given a recipe and asked to find potential improvements!",
     "step2Title": "Use the app! #1",
     "step2Description": "Write a recipe and get the improved version for it. Learn what makes a recipe good!",
     "step3Title": "Use the app! #2",
     "step3Description": "Write yet another recipe and get the improved version for it",
-    "step4Title": "Post test",
+    "step4Title": "Wrap up",
     "step4Description": "Let's see if you have learned anything! You'll be given a recipe and asked to find potential improvements!"
   },
   "LearningTest": {
-    "Submit": "Finish Review"
+    "Submit": "Finish Review",
+    "CardTitle": "Example Recipe",
+    "PostTestDescription": "Write the possible improvements for the recipe given on the right"
   }
 }

@@ -116,12 +116,12 @@ export const MainPage: React.FC<MainPageProps> = ({
         description: "Please enter a longer recipe.",
         placement: "top",
       });
-      return;
+      return false;
     }
     const rule_counts = [3, 5, 10, 20, 30];
     // console.log(`Submitting hit with recipe: ${recipe} and improvementLevel: ${improvementLevel}, num_rules: ${rule_counts[improvementLevel]}`)
     setimprovedRecipeLoading(true);
-
+    const { i18n } = useTranslation();
     // Read userId from cookie
     const userId = document.cookie
       .split(";")
@@ -133,11 +133,13 @@ export const MainPage: React.FC<MainPageProps> = ({
         user_recipe: recipe,
         number_of_rules: rule_counts[improvementLevel],
         user_id: userId,
+        language: i18n.language,
       } as BackendInput);
 
       // Send data through WebSocket
       ws.send(dataToSend);
       setOriginalRecipe(recipe);
+      return true;
     } else {
       console.error("WebSocket is not connected.");
       api.error({
@@ -148,6 +150,7 @@ export const MainPage: React.FC<MainPageProps> = ({
       setOriginalRecipe("");
       setImprovedRecipe(undefined);
       setimprovedRecipeLoading(false);
+      return false;
     }
   };
 

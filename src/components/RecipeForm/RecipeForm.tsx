@@ -9,26 +9,25 @@ type RecipeFormProps = {
   submitHit: (
     recipe: string,
     improvementLevel: number,
-    fromTour?: boolean,
-  ) => void;
+    fromTour?: boolean
+  ) => Promise<boolean>;
   api: NotificationInstance;
 };
 
-export const RecipeForm: React.FC<RecipeFormProps> = ({
-  submitHit,
-  api,
-}) => {
+export const RecipeForm: React.FC<RecipeFormProps> = ({ submitHit, api }) => {
   const [recipe, setRecipe] = useState<string>("");
-  const [improvementLevel, setImprovementLevel] = useState<number>(0);
+  const [improvementLevel, setImprovementLevel] = useState<number>(2);
   const [recentlyShown, setRecentlyShown] = useState<boolean>(false);
   const [inputsDisabled, setInputsDisabled] = useState<boolean>(false);
   const { t } = useTranslation();
-  const handleSubmit = (fromTour?: boolean) => {
+  const handleSubmit = async (fromTour?: boolean) => {
     console.log("Submitting recipe: ", recipe);
-    submitHit(recipe, improvementLevel, fromTour);
     setInputsDisabled(true);
+    const resultOfSubmit = await submitHit(recipe, improvementLevel, fromTour);
+    if (!resultOfSubmit) {
+      setInputsDisabled(false);
+    }
   };
-
 
   const formatter = (value: number | undefined) => {
     if (value === undefined) {
@@ -53,7 +52,7 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
     if (!recentlyShown && value === 4) {
       api.warning({
         message: "Warning",
-        description:t("RecipeForm.Warning"),
+        description: t("RecipeForm.Warning"),
         placement: "top",
         onClose: () => setRecentlyShown(false),
       });
@@ -132,26 +131,30 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({
             </Button>
           </Col>
           <Col span={12}>
-            <Typography.Text style={{ marginRight: "10px" }}>
-              {t("RecipeForm.Slider.Label")}
-            </Typography.Text>
-            <span ref={refMap["improvement-level"]}>
-              <Slider
-                min={0}
-                max={4}
-                onChange={(value: number) => sliderChange(value)}
-                value={improvementLevel}
-                tooltip={{ formatter }}
-                style={{ marginTop: "20px" }}
-                disabled={inputsDisabled}
-              />
-            </span>
+            <div style={{ display: "none" }}>
+              <Typography.Text style={{ marginRight: "10px" }}>
+                {t("RecipeForm.Slider.Label")}
+              </Typography.Text>
+              <span ref={refMap["improvement-level"]}>
+                <Slider
+                  min={0}
+                  max={4}
+                  onChange={(value: number) => sliderChange(value)}
+                  value={improvementLevel}
+                  tooltip={{ formatter }}
+                  style={{ marginTop: "20px" }}
+                  disabled={inputsDisabled}
+                />
+              </span>
+            </div>
           </Col>
         </Row>
       </Form.Item>
       <span ref={refMap["recipe-form"]}>
         <Form.Item name="recipe" style={{ height: "100%" }}>
-          <Typography.Text type="secondary">{t("RecipeForm.Form")}</Typography.Text>
+          <Typography.Text type="secondary">
+            {t("RecipeForm.Form")}
+          </Typography.Text>
           <Input.TextArea
             rows={8}
             className="recipe-input"

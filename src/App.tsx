@@ -28,7 +28,7 @@ i18n
 const App: React.FC<AppProps> = ({
   setDarkMode,
 }) => {
-  const [activeTab, setActiveTab] = useState<string>("welcome"); // Set 'welcome' as initial state
+  const [activeTab, setActiveTab] = useState<string>("app"); // Set 'welcome' as initial state
   const [showWelcomeScreen, setShowWelcomeScreen] = useState<boolean>(true); // Set 'welcome' as initial state
   const { setDoTour } = useContext(TourContext);
   const { ws } = useWebSocketContext();
@@ -41,7 +41,7 @@ const App: React.FC<AppProps> = ({
     document.cookie
       .split(";")
       .find((cookie) => cookie.includes("currentMode"))
-      ?.split("=")[1] || "word";
+      ?.split("=")[1] || "sentence";
   const [currentMode, setCurrentMode] = useState<string>(cookieCurrentMode); // Set 'word' as initial state
   // Set the cookie
   document.cookie = `currentMode=${currentMode}`;

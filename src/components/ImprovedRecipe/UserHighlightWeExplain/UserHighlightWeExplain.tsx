@@ -346,18 +346,25 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
           const wordAnnotations = Object.entries(annotations).filter(
             ([word, _]) => {
               return wordsInSentence.includes(word);
-            },
+            }
           );
           let wordIndexes: { word: string; wordIndex: number }[];
           if (wordAnnotations !== undefined) {
             wordIndexes = wordAnnotations
-              .map(([_, wordAnnotations]) => {
-                return wordAnnotations.map(([word, wordIndex]) => ({
-                  word: word,
-                  wordIndex: wordIndex,
-                }));
-              })
-              .flat();
+              .map(([origWord, wordAnnotations]) => 
+                wordAnnotations.map(([word, wordIndex]) => {
+                  if(wordIndex >= wordIndexCounter && wordIndex < wordIndexCounter + wordsInSentence.length){
+                    return {
+                      word: word,
+                      wordIndex: wordIndex,
+                      origWord: origWord,
+                    };
+                  }
+                  return null;
+                })
+              )
+              .flat()
+              .filter((item): item is { word: string; wordIndex: number; origWord: string } => item !== null);
 
             // Map the wordIndexes to the sentenceIndex
             // console.log('Sentence', currentSentenceIndex, 'has words', wordAnnotations, 'between Indexes', wordIndexCounter, 'and', wordIndexCounter + wordsInSentence.length, wordsInSentence)
