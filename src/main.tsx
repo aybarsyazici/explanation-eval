@@ -6,8 +6,8 @@ import { catppuccinColors } from "../catppuccin_scheme";
 import { TourProvider } from "./components";
 import { WebSocketProvider } from "./helpers/WebSocketContext.tsx";
 import "./index.css";
-// const backendUrl = "wss://gelex-backend-a3bfadfb8f41.herokuapp.com/ws/example";
-const backendUrl = 'ws://localhost:8000/ws/example-simple';
+const backendUrl = "wss://gelex-backend-a3bfadfb8f41.herokuapp.com/ws/example-simple";
+// const backendUrl = 'ws://localhost:8000/ws/example-simple';
 
 
 
