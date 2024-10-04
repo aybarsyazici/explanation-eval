@@ -2,17 +2,9 @@ import { Space } from "antd";
 import {
   Guider,
   LearningTest,
-  UserHighlightUserExplain,
-  UserHighlightUserExplain_word,
-  UserHighlightWeExplain,
-  UserHighlightWeExplain_word,
-  WeHighlightUserExplain,
-  WeHighlightUserExplain_word,
-  WeHighlightWeExplain,
-  WeHighlightWeExplain_word,
 } from "../../components";
 import { NotificationInstance } from "antd/es/notification/interface";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { MainPage } from "../MainPage/MainPage";
 import { useAppVersionContext } from "../../helpers";
 import {
@@ -22,7 +14,6 @@ import {
   UserTestResultsDetails,
 } from "../../types";
 import { traceHit } from "./TraceHit";
-import ResultPage from "../ResultPage/ResultPage";
 interface AppFlowProps {
   appStep: number;
   setAppStep: React.Dispatch<React.SetStateAction<number>>;
@@ -41,34 +32,7 @@ export const AppFlow = ({
 }: AppFlowProps) => {
   const { appVersion } = useAppVersionContext();
   // placeholder, replace with actual data
-  const finishApplication = (
-    finishEvent: string,
-    result_fn: () => void,
-    results: BackendUserResultDetails
-  ) => {
-    // Extend the results with the original recipe and improvement level
-    const userId = document.cookie
-      .split(";")
-      .find((cookie) => cookie.includes("userId"))
-      ?.split("=")[1];
-    if (!userId) {
-      api.error({
-        message: "Error",
-        description: "Something went wrong. Please try again.",
-        placement: "top",
-      });
-      return;
-    }
-    const resultsForBackend: BackendUserResult = {
-      user: userId,
-      event: finishEvent,
-      details: results,
-    };
-    // console.log('Submitting results', resultsForBackend);
-    // Hit endpoint with results(/trace/)
-    traceHit(backendUrlHttp, resultsForBackend, result_fn, api);
-  };
-
+  
   const finishReview = (
     results: UserTestResultsDetails,
     eventName: string,

@@ -12,9 +12,8 @@ type LearningTestProps = {
 };
 
 export const LearningTest: React.FC<LearningTestProps> = ({ finishEvent, version, api }) => {
-  const [testExample, setTestExample] = useState<string>(
-    version === "pre" ? test_example.pre_test : test_example.post_test
-  );
+  const testExample = version === "pre" ? test_example.pre_test : test_example.post_test
+  
   const [reviewText, setReviewText] = useState<string>("");
   const { t } = useTranslation();
   console.log("Mounted Learning Test")
