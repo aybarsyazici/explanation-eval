@@ -73,14 +73,14 @@
     "Warning": "Note this might result in a significant deviation from the original recipe."
   },
   "guider": {
-    "step1Title": "Warm-up",
-    "step1Description": "You'll be given a recipe and asked to find potential improvements!",
-    "step2Title": "Use the app! #1",
-    "step2Description": "Write a recipe and get the improved version for it. Learn what makes a recipe good!",
-    "step3Title": "Use the app! #2",
-    "step3Description": "Write yet another recipe and get the improved version for it",
-    "step4Title": "Wrap up",
-    "step4Description": "Let's see if you have learned anything! You'll be given a recipe and asked to find potential improvements!"
+    "step1Title": "Your Recipe",
+    "step1Description": "Write your recipe! And click submit to get a new recipe!",
+    "step2Title": "Wait for it!",
+    "step2Description": "We are cooking your improved recipe! Please wait!",
+    "step3Title": "Mark the changes!",
+    "step3Description": "Your new recipe is here! Click on the words you think are new!",
+    "step4Title": "Done!",
+    "step4Description": "You are done!"
   },
   "LearningTest": {
     "Submit": "Finish Review",

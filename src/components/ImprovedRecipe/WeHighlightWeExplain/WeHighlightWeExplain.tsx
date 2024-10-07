@@ -281,6 +281,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     });
     setShowPopover(null);
   }, []);
+  console.log("Recipe", recipeText);
   useEffect(() => {
     let sentenceIndex = 0; // Tracks the index of sentences
     const wordIndexToSentenceIndex = new Map<number, number>();
@@ -323,7 +324,6 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
             )
             .flat()
             .filter((item): item is { word: string; wordIndex: number; origWord: string } => item !== null);
-          
           // Map the wordIndexes to the sentenceIndex
           // console.log('Sentence', currentSentenceIndex, 'has words', wordAnnotations, 'between Indexes', wordIndexCounter, 'and', wordIndexCounter + wordsInSentence.length, wordsInSentence)
           wordIndexes.forEach(({ word: _, wordIndex }) => {
@@ -340,7 +340,6 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         } else {
           wordIndexes = [];
         }
-
         const toggleSentenceSelection = () => {
           if (wordIndexes.length > 0) {
             setSelectedSentences((prev) => {

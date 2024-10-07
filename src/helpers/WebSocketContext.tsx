@@ -3,7 +3,7 @@ import { useWebSocket } from ".";
 
 // Define the shape of the context
 interface WebSocketContextProps {
-    ws: WebSocket;
+    ws: WebSocket | null;
     isConnected: boolean;
     setOnChildDataReceive: (fn: (data: any) => void) => void;
     setOnChildErrorReceive: (fn: (error: Event) => void) => void;

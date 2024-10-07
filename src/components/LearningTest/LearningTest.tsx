@@ -16,7 +16,6 @@ export const LearningTest: React.FC<LearningTestProps> = ({ finishEvent, version
   
   const [reviewText, setReviewText] = useState<string>("");
   const { t } = useTranslation();
-  console.log("Mounted Learning Test")
 
   useEffect(() => {
     console.log("Fetching pre-test example");

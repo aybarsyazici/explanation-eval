@@ -5,7 +5,7 @@ import "./App.css";
 import { AppFlow, ResultPage } from "./pages";
 import WelcomeScreen from "./pages/WelcomeScreen/WelcomeScreen";
 import { AppTour, TourContext } from "./components";
-import { AppVersionProvider, useWebSocketContext } from "./helpers";
+import { AppVersionProvider } from "./helpers";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { resources } from "../i18n.ts"
@@ -31,7 +31,6 @@ const App: React.FC<AppProps> = ({
   const [activeTab, setActiveTab] = useState<string>("app"); // Set 'welcome' as initial state
   const [showWelcomeScreen, setShowWelcomeScreen] = useState<boolean>(true); // Set 'welcome' as initial state
   const { setDoTour } = useContext(TourContext);
-  const { ws } = useWebSocketContext();
   useEffect(() => {
     setDoTour(false);
   }, [setDoTour]);
@@ -46,14 +45,7 @@ const App: React.FC<AppProps> = ({
   // Set the cookie
   document.cookie = `currentMode=${currentMode}`;
 
-  // Does cookie for appStep exist?
-  // Read appStep from cookie
-  const cookieAppStep =
-    document.cookie
-      .split(";")
-      .find((cookie) => cookie.includes("appStep"))
-      ?.split("=")[1] || "0";
-  const [appStep, setAppStep] = useState<number>(parseInt(cookieAppStep)); // Set '0' as initial state
+  const [appStep, setAppStep] = useState<number>(0); // Set '0' as initial state
 
   useEffect(()=>{
     // Whenever the appStep changes, update the cookie
@@ -103,7 +95,7 @@ const App: React.FC<AppProps> = ({
           <Row>
             <Col span={2} />
             <Col span={20}>
-              {activeTab === "app" && ws !== null && (
+              {activeTab === "app" && (
                 <AppFlow
                   appStep={appStep}
                   setAppStep={setAppStep}

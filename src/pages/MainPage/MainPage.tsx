@@ -29,14 +29,16 @@ import { useTranslation } from "react-i18next";
 
 type MainPageProps = {
   api: NotificationInstance;
-  setAppStep: () => void;
+  setAppStep: React.Dispatch<React.SetStateAction<number>>;
   currentMode: string;
   backendUrlHttp: string;
+  finishFn: () => void;
 };
 
 export const MainPage: React.FC<MainPageProps> = ({
   api,
   setAppStep,
+  finishFn,
   currentMode,
   backendUrlHttp,
 }) => {
@@ -79,6 +81,7 @@ export const MainPage: React.FC<MainPageProps> = ({
       //   annotations: data.annotations,
       // })}`;
       setimprovedRecipeLoading(false);
+      setAppStep(2);
       api.success({
         message: "Your new recipe is here!",
         description:
@@ -90,7 +93,7 @@ export const MainPage: React.FC<MainPageProps> = ({
     const handleError = (error: Event) => {
       console.error("WebSocket error:", error);
       setimprovedRecipeLoading(false);
-      console.log("Websocket error while not in tour");
+      setAppStep(0);
       setOriginalRecipe("");
       setImprovedRecipe(undefined);
     };
@@ -109,7 +112,7 @@ export const MainPage: React.FC<MainPageProps> = ({
     recipe: string,
     improvementLevel: number,
   ) => {
-    // console.log('Submitting recipe mainpage: ', recipe, fromTour)
+    // console.log('Submitting recipe mainpage: ', recipe, fromTour) 
     // Check the length of the recipe
     if (recipe.length < 25) {
       api.error({
@@ -122,6 +125,7 @@ export const MainPage: React.FC<MainPageProps> = ({
     const rule_counts = [3, 5, 10, 20, 30];
     // console.log(`Submitting hit with recipe: ${recipe} and improvementLevel: ${improvementLevel}, num_rules: ${rule_counts[improvementLevel]}`)
     setimprovedRecipeLoading(true);
+    setAppStep(1);
     // Read userId from cookie
     const userId = document.cookie
       .split(";")
@@ -151,6 +155,7 @@ export const MainPage: React.FC<MainPageProps> = ({
       setOriginalRecipe("");
       setImprovedRecipe(undefined);
       setimprovedRecipeLoading(false);
+      setAppStep(0);
       return false;
     }
   };
@@ -196,7 +201,7 @@ export const MainPage: React.FC<MainPageProps> = ({
           setimprovedRecipeLoading(false);
           setRevealExtraWord(() => () => {});
           setRevealAllWords(() => () => {});
-          setAppStep();
+          finishFn();
         }),
       )
       .catch((error) => {

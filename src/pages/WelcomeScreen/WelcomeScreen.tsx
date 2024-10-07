@@ -108,7 +108,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     {
       key: "lang-switch", label: t("WelcomeScreen.SwitchLang"), icon: <GlobalOutlined />,
     },
-    { key: "sentence-mode", label: t("WelcomeScreen.SwitchMode"), icon: <GlobalOutlined /> },
+    // { key: "sentence-mode", label: t("WelcomeScreen.SwitchMode"), icon: <GlobalOutlined /> },
     { key: "modal", label:  t("Tour.Change"), icon: <PoweroffOutlined /> },
   ];
 

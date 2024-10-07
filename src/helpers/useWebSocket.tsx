@@ -3,7 +3,7 @@ import { BackendResponse } from "../types";
 
 // Custom hook for WebSocket connection management
 export const useWebSocket = (url: string) => {
-    const wsRef = useRef<WebSocket>(new WebSocket(url)); // Always initialized
+    const wsRef = useRef<WebSocket | null>(null); // Ref for the WebSocket
     const [isConnected, setIsConnected] = useState(false);
   
     const childOnDataReceive = useRef<(data: BackendResponse) => void>(() => {});
@@ -19,16 +19,21 @@ export const useWebSocket = (url: string) => {
   
     useEffect(() => {
       let shouldReconnect = true;
-  
+
       const connectWebSocket = () => {
-        const webSocket = wsRef.current;
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          console.log("WebSocket is already connected");
+          return; // If WebSocket is already open, don't reconnect
+        }
+
+        wsRef.current = new WebSocket(url); // Initialize WebSocket object
   
-        webSocket.onopen = () => {
+        wsRef.current.onopen = () => {
           console.log("WebSocket connection established");
           setIsConnected(true); // Mark as connected
         };
   
-        webSocket.onmessage = (event) => {
+        wsRef.current.onmessage = (event) => {
           if (event.data === "ping") {
             console.log("Received ping message");
             return;
@@ -40,14 +45,14 @@ export const useWebSocket = (url: string) => {
           }
         };
   
-        webSocket.onerror = (error) => {
+        wsRef.current.onerror = (error) => {
           console.log("WebSocket error:", error);
           if (childOnErrorReceive.current) {
             childOnErrorReceive.current(error);
           }
         };
   
-        webSocket.onclose = (event) => {
+        wsRef.current.onclose = (event) => {
           console.log(
             "WebSocket connection closed",
             event.code,
@@ -57,19 +62,18 @@ export const useWebSocket = (url: string) => {
           setIsConnected(false); // Mark as disconnected
           if (shouldReconnect) {
             setTimeout(() => {
-              wsRef.current = new WebSocket(url); // Reinitialize the WebSocket object
-              connectWebSocket();
+              connectWebSocket(); // Reconnect
             }, 3500); // Reconnect after a delay
           }
         };
       };
   
-      connectWebSocket();
+      connectWebSocket(); // Establish the WebSocket connection
   
       return () => {
         shouldReconnect = false;
         if (wsRef.current) {
-          wsRef.current.close();
+          wsRef.current.close(); // Close WebSocket when component unmounts
         }
       };
     }, [url]); // Depend on the WebSocket URL
@@ -80,6 +84,6 @@ export const useWebSocket = (url: string) => {
       setOnChildDataReceive,
       setOnChildErrorReceive,
     };
-  };
+};
 
 export default useWebSocket;
