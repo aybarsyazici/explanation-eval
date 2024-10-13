@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Form, Popover, Button, Typography, theme } from "antd";
 import "./ImprovedRecipeDisplay.css";
 import { BackendUserResultDetails, ImprovedRecipe } from "../../../types";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import {
+  DislikeOutlined,
+  LikeOutlined,
+} from "@ant-design/icons";
 import confetti from "canvas-confetti"; // Import the library
 import TextArea from "antd/es/input/TextArea";
 
@@ -16,6 +19,7 @@ interface ClickableSentenceProps {
   sentence: string;
   index: number;
   onAccept: (index: number, sentenceExplanation: string) => void;
+  onDecline: (index: number, sentenceExplanation: string) => void;
   toggleSelection: (index: number) => void;
   showPopover: boolean;
   setShowPopover: (index: number | null) => void;
@@ -39,6 +43,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     sentence,
     index,
     onAccept,
+    onDecline,
     toggleSelection,
     showPopover,
     setShowPopover,
@@ -60,11 +65,14 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
               }}
             />
             <div className="like-dislike-container">
+              <Button className="like-button" onClick={() => onAccept(index, sentenceExplanation)}>
+                <LikeOutlined />
+              </Button>
               <Button
-                className="like-button"
-                onClick={() => onAccept(index, sentenceExplanation)}
+                className="dislike-button"
+                onClick={() => onDecline(index, sentenceExplanation)}
               >
-                <CheckCircleOutlined />
+                <DislikeOutlined />
               </Button>
             </div>
           </div>
@@ -90,7 +98,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
       JSON.stringify(prevProps.sentenceStyle) ===
         JSON.stringify(nextProps.sentenceStyle)
     );
-  },
+  }
 );
 
 export const ImprovedRecipeDisplaySentenceScale: React.FC<
@@ -194,7 +202,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         }
       }
     },
-    [selectedSentences, isDarkMode],
+    [selectedSentences, isDarkMode]
   );
 
   useEffect(() => {
@@ -205,7 +213,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       });
     });
     const indicesInAnnotations = Array.from(indices).map((index) =>
-      wordToSentenceIndex.get(index),
+      wordToSentenceIndex.get(index)
     );
     const newSelectedMap = new Map(selectedSentences);
     indicesInAnnotations.forEach((randomIndex) => {
@@ -220,10 +228,10 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   useEffect(() => {
     // Count the current accepted + declined word count
     const acceptedSentences = Array.from(selectedSentences.values()).filter(
-      (status) => status === "accepted",
+      (status) => status === "accepted"
     ).length;
     const declinedSentences = Array.from(selectedSentences.values()).filter(
-      (status) => status === "declined",
+      (status) => status === "declined"
     ).length;
     const totalWords = acceptedSentences + declinedSentences;
     if (
@@ -252,7 +260,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       improvedRecipe: recipeText,
       selectedIndexes: Object.fromEntries(selectedSentences),
       providedExplanations: Object.fromEntries(
-        sentenceExplanations || new Map(),
+        sentenceExplanations || new Map()
       ),
       timestamp: new Date().toISOString(),
       sentences: sentences,
@@ -277,7 +285,24 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       });
       setShowPopover(null);
     },
-    [],
+    []
+  );
+
+  // useCallback to memoize the function
+  const handleDecline = useCallback(
+    (index: number, sentenceExplanation: string) => {
+      // Check whether the explanation is longer than 5 characters
+      if (sentenceExplanation.length < 5) {
+        return;
+      }
+      setSelectedSentences((prev) => {
+        const newSelected = new Map(prev);
+        newSelected.set(index, "declined");
+        return newSelected;
+      });
+      setShowPopover(null);
+    },
+    []
   );
 
   useEffect(() => {
@@ -308,9 +333,12 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         let wordIndexes: { word: string; wordIndex: number }[];
         if (wordAnnotations !== undefined) {
           wordIndexes = wordAnnotations
-            .map(([origWord, wordAnnotations]) => 
+            .map(([origWord, wordAnnotations]) =>
               wordAnnotations.map(([word, wordIndex]) => {
-                if(wordIndex >= wordIndexCounter && wordIndex < wordIndexCounter + wordsInSentence.length){
+                if (
+                  wordIndex >= wordIndexCounter &&
+                  wordIndex < wordIndexCounter + wordsInSentence.length
+                ) {
                   return {
                     word: word,
                     wordIndex: wordIndex,
@@ -321,7 +349,15 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
               })
             )
             .flat()
-            .filter((item): item is { word: string; wordIndex: number; origWord: string } => item !== null);
+            .filter(
+              (
+                item
+              ): item is {
+                word: string;
+                wordIndex: number;
+                origWord: string;
+              } => item !== null
+            );
 
           // Map the wordIndexes to the sentenceIndex
           // console.log('Sentence', currentSentenceIndex, 'has words', wordAnnotations, 'between Indexes', wordIndexCounter, 'and', wordIndexCounter + wordsInSentence.length, wordsInSentence)
@@ -395,7 +431,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         return newExplanations;
       });
     },
-    [setSentenceExplanations],
+    [setSentenceExplanations]
   );
 
   // Animation classes added to the elements
@@ -419,6 +455,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                   }
                   handleExplanationChange={handleExplanationChange}
                   onAccept={handleAccept}
+                  onDecline={handleDecline}
                 />
               );
             } else {

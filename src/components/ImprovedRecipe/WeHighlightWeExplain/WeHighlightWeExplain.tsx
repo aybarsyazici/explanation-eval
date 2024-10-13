@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Form, Popover, Button, Typography, theme, Divider } from "antd";
 import "./ImprovedRecipeDisplay.css";
 import { BackendUserResultDetails, ImprovedRecipe } from "../../../types";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { DislikeOutlined, LikeOutlined } from "@ant-design/icons";
 import confetti from "canvas-confetti"; // Import the library
 
 type ImprovedRecipeDisplayProps = {
@@ -15,6 +15,7 @@ interface ClickableSentenceProps {
   sentence: string;
   index: number;
   onAccept: (index: number) => void;
+  onDecline: (index: number) => void;
   toggleSelection: (index: number) => void;
   showPopover: boolean;
   setShowPopover: (index: number | null) => void;
@@ -37,6 +38,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     sentence,
     index,
     onAccept,
+    onDecline,
     toggleSelection,
     showPopover,
     setShowPopover,
@@ -78,7 +80,13 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
 
             <div className="like-dislike-container">
               <Button className="like-button" onClick={() => onAccept(index)}>
-                <CheckCircleOutlined />
+                <LikeOutlined />
+              </Button>
+              <Button
+                className="dislike-button"
+                onClick={() => onDecline(index)}
+              >
+                <DislikeOutlined />
               </Button>
             </div>
           </div>
@@ -281,6 +289,17 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     });
     setShowPopover(null);
   }, []);
+
+  // useCallback to memoize the function
+  const handleDecline = useCallback((index: number) => {
+    setSelectedSentences((prev) => {
+      const newSelected = new Map(prev);
+      newSelected.set(index, "declined");
+      return newSelected;
+    });
+    setShowPopover(null);
+  }, []);
+
   useEffect(() => {
     let sentenceIndex = 0; // Tracks the index of sentences
     const wordIndexToSentenceIndex = new Map<number, number>();
@@ -413,6 +432,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                   setShowPopover={setShowPopover}
                   sentenceExplanation={currentSentenceExplanation}
                   onAccept={handleAccept}
+                  onDecline={handleDecline}
                 />
               );
             } else {
