@@ -1,4 +1,4 @@
-import { Card, Col, Empty, Popover, Row, Space, FloatButton } from "antd";
+import { Card, Col, Empty, Popover, Row, Space } from "antd";
 import {
   UserHighlightWeExplain,
   UserHighlightWeExplain_word,
@@ -21,7 +21,6 @@ import {
 import { NotificationInstance } from "antd/es/notification/interface";
 import {
   BulbOutlined,
-  ForkOutlined,
   QuestionOutlined,
 } from "@ant-design/icons";
 import { useAppVersionContext, useWebSocketContext } from "../../helpers";
@@ -338,12 +337,6 @@ export const MainPage: React.FC<MainPageProps> = ({
           )}
         </Col>
       </Row>
-      <FloatButton
-        icon={<ForkOutlined />}
-        type="primary"
-        tooltip={`current app version ${appVersion}`}
-        /*@ts-ignore*/
-      />
     </Space>
   );
 };

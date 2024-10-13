@@ -281,7 +281,6 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     });
     setShowPopover(null);
   }, []);
-  console.log("Recipe", recipeText);
   useEffect(() => {
     let sentenceIndex = 0; // Tracks the index of sentences
     const wordIndexToSentenceIndex = new Map<number, number>();
@@ -340,6 +339,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         } else {
           wordIndexes = [];
         }
+        // console.log("Linematch", lineMatch, "wordIndex", wordIndexCounter, "wordsInSentence", wordsInSentence, "wordIndexes", wordIndexes);
         const toggleSentenceSelection = () => {
           if (wordIndexes.length > 0) {
             setSelectedSentences((prev) => {

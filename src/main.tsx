@@ -23,7 +23,6 @@ const Main = () => {
   const themeColors = isDarkMode
     ? catppuccinColors.Mocha
     : catppuccinColors.Latte;
-  console.log("MAIN MOUNTED")
   return (
     <React.StrictMode>
       <ConfigProvider

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Form, Input, Button, Slider, Row, Col, Typography } from "antd";
+import { Form, Input, Button, Slider, Row, Col, Typography, Space } from "antd";
 import "./RecipeForm.css";
 import { NotificationInstance } from "antd/es/notification/interface";
 import { IPageRef, TourContext } from "..";
@@ -117,19 +117,23 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({ submitHit, api }) => {
 
   return (
     <Form style={{ height: "100%" }}>
+      <span ref={refMap["recipe-form"]}>
+        <Form.Item
+          name="recipe"
+          style={{ height: "100%" }}
+          label={t("RecipeForm.Form")}
+        >
+          <Input.TextArea
+            rows={8}
+            className="recipe-input"
+            value={recipe}
+            onChange={(e) => setRecipe(e.target.value)}
+            disabled={inputsDisabled || doTour}
+          />
+        </Form.Item>
+      </span>
       <Form.Item>
         <Row>
-          <Col span={12}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={inputsDisabled}
-              ref={refMap["submit-recipe"]}
-              onClick={() => handleSubmit()}
-            >
-              {t("RecipeForm.SubmitButton")}
-            </Button>
-          </Col>
           <Col span={12}>
             <div style={{ display: "none" }}>
               <Typography.Text style={{ marginRight: "10px" }}>
@@ -148,22 +152,21 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({ submitHit, api }) => {
               </span>
             </div>
           </Col>
+          <Col span={12}>
+            <Space direction="vertical" style={{ display: "flex" }} align="end">
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={inputsDisabled}
+                ref={refMap["submit-recipe"]}
+                onClick={() => handleSubmit()}
+              >
+                {t("RecipeForm.SubmitButton")}
+              </Button>
+            </Space>
+          </Col>
         </Row>
       </Form.Item>
-      <span ref={refMap["recipe-form"]}>
-        <Form.Item name="recipe" style={{ height: "100%" }}>
-          <Typography.Text type="secondary">
-            {t("RecipeForm.Form")}
-          </Typography.Text>
-          <Input.TextArea
-            rows={8}
-            className="recipe-input"
-            value={recipe}
-            onChange={(e) => setRecipe(e.target.value)}
-            disabled={inputsDisabled || doTour}
-          />
-        </Form.Item>
-      </span>
     </Form>
   );
 };

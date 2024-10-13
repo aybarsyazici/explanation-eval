@@ -32,7 +32,10 @@ export const AppFlow = ({
             api={api}
             key={"application-use-1"}
             setAppStep={setAppStep}
-            finishFn={() => setActivePage("result")}
+            finishFn={() => {
+              setActivePage("result");
+              setAppStep(0);
+            }}
             currentMode={currentMode}
             backendUrlHttp={backendUrlHttp}
           />

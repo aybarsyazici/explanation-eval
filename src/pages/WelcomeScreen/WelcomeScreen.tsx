@@ -1,7 +1,6 @@
 import React from "react";
-import { List, Button, Typography, Modal, Input, Space } from "antd";
+import { List, Button, Modal, Input, Space } from "antd";
 import {
-  ArrowUpOutlined,
   CoffeeOutlined,
   GlobalOutlined,
   PoweroffOutlined,
@@ -40,7 +39,6 @@ const appVersionToPassword = {
   3: "appv4oume",
 };
 
-const { Text } = Typography;
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onMenuSelect,
@@ -173,9 +171,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           />
         </Space>
       </Modal>
-      <Text className="menu-info-text">
-        <ArrowUpOutlined /> {t("WelcomeScreen.HoverMessage")}  <ArrowUpOutlined />
-      </Text>
       <span>
         <List
           header={<div>{t("WelcomeScreen.WelcomeMessage")}</div>}

@@ -1,14 +1,26 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Col, Layout, Row, notification, theme } from "antd";
+import {
+  Button,
+  Col,
+  FloatButton,
+  Layout,
+  Row,
+  notification,
+  theme,
+} from "antd";
 const { Content } = Layout;
 import "./App.css";
 import { AppFlow, ResultPage } from "./pages";
 import WelcomeScreen from "./pages/WelcomeScreen/WelcomeScreen";
 import { AppTour, TourContext } from "./components";
-import { AppVersionProvider } from "./helpers";
+import {
+  AppVersionProvider,
+  useAppVersion,
+} from "./helpers";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import { resources } from "../i18n.ts"
+import { resources } from "../i18n.ts";
+import { ForkOutlined, MenuOutlined } from "@ant-design/icons";
 
 type AppProps = {
   setDarkMode: (isDarkMode: boolean) => void;
@@ -21,15 +33,14 @@ i18n
     lng: "en",
 
     interpolation: {
-      escapeValue: false // react already safes from xss
-    }
+      escapeValue: false, // react already safes from xss
+    },
   });
 
-const App: React.FC<AppProps> = ({
-  setDarkMode,
-}) => {
+const App: React.FC<AppProps> = ({ setDarkMode }) => {
   const [activeTab, setActiveTab] = useState<string>("app"); // Set 'welcome' as initial state
   const [showWelcomeScreen, setShowWelcomeScreen] = useState<boolean>(true); // Set 'welcome' as initial state
+  const { appVersion } = useAppVersion();
   const { setDoTour } = useContext(TourContext);
   useEffect(() => {
     setDoTour(false);
@@ -47,11 +58,10 @@ const App: React.FC<AppProps> = ({
 
   const [appStep, setAppStep] = useState<number>(0); // Set '0' as initial state
 
-  useEffect(()=>{
+  useEffect(() => {
     // Whenever the appStep changes, update the cookie
     document.cookie = `appStep=${appStep}`;
-  },[appStep]);
-
+  }, [appStep]);
 
   // Read dark mode from config
   const { theme: themeToken } = theme.useToken();
@@ -75,10 +85,15 @@ const App: React.FC<AppProps> = ({
 
   return (
     <AppVersionProvider>
-      <div className="hover-target-parent">
+      {/* <div className="hover-target-parent">
         <div className="hover-target" onMouseOver={handleHoverOverTop} />
-      </div>
+      </div> */}
       <Layout className="layout">
+        <div className="menu-button-wrapper">
+          <Button size="large" type="text" icon={<MenuOutlined/>} onClick={handleHoverOverTop}>
+          Menu
+          </Button>
+        </div>
         {contextHolder}
         <WelcomeScreen
           className={showWelcomeScreen ? "menu-enter" : "menu-exit"}
@@ -91,7 +106,7 @@ const App: React.FC<AppProps> = ({
           activeTab={activeTab}
           api={api}
         />
-        <Content style={{ padding: "2rem 0rem", overflow: "auto"}}>
+        <Content style={{ padding: "2rem 0rem", overflow: "auto" }}>
           <Row>
             <Col span={2} />
             <Col span={20}>
@@ -102,7 +117,8 @@ const App: React.FC<AppProps> = ({
                   api={api}
                   setActivePage={handleMenuSelect}
                   currentMode={currentMode}
-              />)}
+                />
+              )}
               {activeTab === "about" && <p>About Us content</p>}
               {activeTab === "result" && (
                 <ResultPage setActivePage={handleMenuSelect} />
@@ -111,6 +127,12 @@ const App: React.FC<AppProps> = ({
             <Col span={2} />
           </Row>
         </Content>
+        <FloatButton
+          icon={<ForkOutlined />}
+          type="primary"
+          tooltip={`current app version ${appVersion}`}
+          /*@ts-ignore*/
+        />
       </Layout>
       <AppTour />
     </AppVersionProvider>
