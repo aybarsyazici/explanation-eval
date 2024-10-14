@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Form, Popover, Button, Typography, theme } from "antd";
 import "./ImprovedRecipeDisplay.css";
 import { BackendUserResultDetails, ImprovedRecipe } from "../../../types";
 import { DislikeOutlined, LikeOutlined } from "@ant-design/icons";
 import confetti from "canvas-confetti"; // Import the library
 import TextArea from "antd/es/input/TextArea";
+import { IPageRef, TourContext } from "../../AppTour/TourContext";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -27,6 +28,8 @@ interface ClickableSentenceProps {
   sentenceStyle?: React.CSSProperties;
   sentenceExplanation: string;
   handleExplanationChange: (index: number, newExplanation: string) => void;
+  popRef: React.RefObject<HTMLDivElement> | undefined;
+  spanRef: React.RefObject<HTMLSpanElement> | undefined;
 }
 
 type BreakElementProps = {};
@@ -49,6 +52,8 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     sentenceExplanation,
     handleExplanationChange,
     sentenceStyle,
+    popRef,
+    spanRef,
   }) => {
     return (
       <Popover
@@ -83,10 +88,12 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
         trigger="click"
         visible={showPopover}
         onVisibleChange={(visible) => !visible && setShowPopover(null)}
+        ref={popRef}
       >
         <span
           style={{ ...sentenceStyle, marginRight: "5px", cursor: "pointer" }}
           onClick={() => toggleSelection(index)}
+          ref={spanRef}
         >
           {sentence}{" "}
         </span>
@@ -131,8 +138,77 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   // Read dark mode from config
   const { theme: themeToken } = theme.useToken();
   const isDarkMode = themeToken.id === 1;
-
   const { recipeText, annotations } = improvedRecipe;
+
+  // Ref Map
+  const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
+  refMap["all-word-wrapper"] = useRef<HTMLDivElement>(null);
+  refMap["result-wrapper"] = useRef<HTMLDivElement>(null);
+
+  refMap["first-sentence"] = useRef<HTMLDivElement>(null);
+  refMap["third-sentence"] = useRef<HTMLDivElement>(null);
+  refMap["fifth-sentence"] = useRef<HTMLDivElement>(null);
+
+  refMap["first-sentence-pop"] = useRef<HTMLDivElement>(null);
+  refMap["third-sentence-pop"] = useRef<HTMLDivElement>(null);
+  refMap["fifth-sentence-pop"] = useRef<HTMLDivElement>(null);
+
+  const { startTour, doTour, currentPage, setCurrentPage } =
+    useContext(TourContext);
+  const createTour = () => {
+    const refs: IPageRef[] = [];
+    refs.push({
+      title: "Find the changes!",
+      content: "You'll need to find the new sentences that have been added to your recipe!",
+      target: refMap["first-sentence"],
+      onNext: () => {
+        refMap["first-sentence"]?.current?.click();
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: "Why did we do this?",
+      content:
+        "Clicking on a marked change will bring this popup.\
+        In this pop up you'll be asked to explain why you think this change was made.\
+        Also, select whether you like or dislike this change.",
+      target: refMap["first-sentence-pop"],
+      onNext: () => {
+        handleAccept(0, "Explanation from tour");
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: "Find ALL the changes!",
+      content: "You'll need to find all the changes!",
+      target: refMap["all-word-wrapper"],
+      onNext: () => {
+        handleAccept(2, "Explanation from tour");
+        handleDecline(4, "Explanation from tour");
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: "Wrapping up!",
+      content:
+        "After you finding and explaining\
+        all the changes you'll be able to submit your results!",
+      target: refMap["result-wrapper"],
+      onClose: () => {
+        finishReview();
+      },
+    });
+    return refs;
+  };
+
+  useEffect(() => {
+    if (!doTour) return;
+    if (currentPage === 5) return;
+    if (currentPage === 4) {
+      setCurrentPage(5);
+      startTour(createTour());
+    }
+  }, [startTour, doTour, currentPage, setCurrentPage, createTour]);
 
   const getSentenceStyle = (sentenceIndex: number) => {
     const status = selectedSentences.get(sentenceIndex);
@@ -495,6 +571,24 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                   handleExplanationChange={handleExplanationChange}
                   onAccept={handleAccept}
                   onDecline={handleDecline}
+                  popRef={
+                    doTour && currentPage === 3 && index === 0
+                      ? refMap["first-sentence-pop"]
+                      : doTour && currentPage === 3 && index === 2
+                        ? refMap["third-sentence-pop"]
+                        : doTour && currentPage === 3 && index === 4
+                          ? refMap["fifth-word-pop"]
+                          : undefined
+                  }
+                  spanRef={
+                    doTour && currentPage === 3 && index === 0
+                      ? refMap["first-sentence"]
+                      : doTour && currentPage === 3 && index === 2
+                        ? refMap["third-sentence"]
+                        : doTour && currentPage === 3 && index === 4
+                          ? refMap["fifth-sentence"]
+                          : undefined
+                  }
                 />
               );
             } else {

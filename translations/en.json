@@ -49,7 +49,7 @@
   },
   "MainPage": {
     "TitleImproveRecipe": "Your improved recipe will be here!",
-    "ContentWordScale": "You will be asked to find out the changes either in word-scale or sentence-scale(Remember you can always switch the scale from the menu!)",
+    "ContentWordScale": "You will be asked to find out the changes sentence-scale",
     "ContentHighlightedChanges": "The changes will already be highlighted for you!",
     "TitleCheckAppVersion": "Check the app version!",
     "ContentCheckAppVersion": "You can check the current variant/version of the app you are using, by clicking here. It should be right now {appVersion}",

@@ -9,8 +9,10 @@ import {
   WeHighlightUserExplain_word,
   WeHighlightWeExplain,
   WeHighlightWeExplain_word,
+  TourContext,
+  IPageRef,
 } from "../../components";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   BackendInput,
   ImprovedRecipe,
@@ -42,7 +44,8 @@ export const MainPage: React.FC<MainPageProps> = ({
   backendUrlHttp,
 }) => {
   const { t } = useTranslation();
-
+  const { doTour, setCurrentPage, startTour, setDoTour } =
+    useContext(TourContext);
   const [originalRecipe, setOriginalRecipe] = useState<string>("");
   const [improvementLevel, setImprovementLevel] = useState<number>(0);
   const [revealExtraWord, setRevealExtraWord] = useState<() => void>(
@@ -60,9 +63,55 @@ export const MainPage: React.FC<MainPageProps> = ({
   >();
   const [improvedRecipeLoading, setimprovedRecipeLoading] = useState(false);
   const { appVersion } = useAppVersionContext();
-
   const { ws, setOnChildDataReceive, setOnChildErrorReceive } = useWebSocketContext();
   const { i18n } = useTranslation();
+
+    // Ref Map
+    const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
+    refMap["improved-recipe-wrapper"] = useRef<HTMLDivElement>(null);
+    refMap["reveal-next-change"] = useRef<HTMLDivElement>(null);
+    refMap["reveal-all-changes"] = useRef<HTMLDivElement>(null);
+    const [refState, setRefState] = useState<IPageRef[]>([]);
+
+    // Use useEffect to update refState when appVersion changes
+    useEffect(() => {
+      const newRefState: IPageRef[] = [
+        {
+          title: t("MainPage.TitleImproveRecipe"),
+          content:
+            appVersion < 2
+              ? t("MainPage.ContentWordScale")
+              : t("MainPage.ContentHighlightedChanges"),
+          target: refMap["improved-recipe-wrapper"],
+          onClose: () => {
+            setCurrentPage(4);
+          },
+        },
+        ...(appVersion < 2
+          ? [
+              {
+                title: t("MainPage.TitleRevealChangesOne"),
+                content: t("MainPage.ContentRevealChangesOne"),
+                target: refMap["reveal-next-change"],
+                onClose: () => {
+                  setCurrentPage(4);
+                },
+              },
+              {
+                title: t("MainPage.TitleRevealChangesAll"),
+                content: t("MainPage.ContentRevealChangesAll"),
+                target: refMap["reveal-all-changes"],
+                onClose: () => {
+                  setCurrentPage(4);
+                },
+              },
+            ]
+          : []),
+      ];
+    
+      // Update refState with the new array
+      setRefState(newRefState);
+    }, [appVersion, t]); // Dependencies: appVersion and t for translations
 
   useEffect(() => {
     // Define the function that the parent will call
@@ -92,9 +141,11 @@ export const MainPage: React.FC<MainPageProps> = ({
     const handleError = (error: Event) => {
       console.error("WebSocket error:", error);
       setimprovedRecipeLoading(false);
-      setAppStep(0);
-      setOriginalRecipe("");
-      setImprovedRecipe(undefined);
+      if(!doTour){
+        setAppStep(0);
+        setOriginalRecipe("");
+        setImprovedRecipe(undefined);
+      }
     };
 
     // Pass this function to the parent
@@ -110,7 +161,35 @@ export const MainPage: React.FC<MainPageProps> = ({
   const submitHit = async (
     recipe: string,
     improvementLevel: number,
+    fromTour?: boolean,
   ) => {
+    if (doTour && fromTour) {
+      setImprovedRecipe({
+        recipeText:
+          `This is an example improved recipe. 
+          Click on the sentences you think are new! 
+          You can like or dislike the sentences.
+          Depending on the version, what you need to do will change! 
+          After the tour you'll write your own recipe!
+          So get ready!`,
+        annotations: {
+          This: [["th", 0]],
+          an: [["an", 2]],
+          like: [["like", 16]],
+          tour: [["tour", 34]],
+        },
+        explanations: {
+          This: "This is an example explanation.",
+          an: "This is an example explanation.",
+          like: "This is an example explanation.",
+          tour: "This is an example explanation.",
+        },
+      });
+      setCurrentPage(3);
+      setTimeout(() => startTour(refState), 1);
+      setAppStep(2);
+      return true;
+    }
     // console.log('Submitting recipe mainpage: ', recipe, fromTour) 
     // Check the length of the recipe
     if (recipe.length < 25) {
@@ -160,6 +239,13 @@ export const MainPage: React.FC<MainPageProps> = ({
   };
 
   const finishReview = (results: BackendUserResultDetails) => {
+    if (doTour) {
+      setDoTour(false);
+      // Set cookieTour to true
+      document.cookie = "tour=true;max-age=31536000";
+      finishFn();
+      return;
+    }
     // Extend the results with the original recipe and improvement level
     results.originalRecipe = originalRecipe;
     results.improvementLevel = improvementLevel;
@@ -230,6 +316,7 @@ export const MainPage: React.FC<MainPageProps> = ({
               <Card
                 title={t("MainPage.ImprovedRecipe")}
                 loading={improvedRecipeLoading}
+                ref={refMap["improved-recipe-wrapper"]}
                 actions={[
                   <Popover
                     content={
@@ -240,6 +327,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                   >
                     <QuestionOutlined
                       onClick={revealExtraWord}
+                      ref={refMap["reveal-next-change"]}
                     />
                   </Popover>,
                   <Popover
@@ -251,6 +339,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                   >
                     <BulbOutlined
                       onClick={revealAllWords}
+                      ref={refMap["reveal-all-changes"]}
                     />
                   </Popover>,
                 ]}
@@ -303,6 +392,7 @@ export const MainPage: React.FC<MainPageProps> = ({
             <Card
               title={t("MainPage.ImprovedRecipe")}
               loading={improvedRecipeLoading}
+              ref={refMap["improved-recipe-wrapper"]}
             >
               {appVersion === 2 &&
                 improvedRecipe &&

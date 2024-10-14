@@ -1,9 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Form, Popover, Button, Typography, theme, Divider } from "antd";
 import "./ImprovedRecipeDisplay.css";
 import { BackendUserResultDetails, ImprovedRecipe } from "../../../types";
 import { DislikeOutlined, LikeOutlined } from "@ant-design/icons";
 import confetti from "canvas-confetti"; // Import the library
+import { IPageRef, TourContext } from "../../AppTour/TourContext";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -23,6 +30,8 @@ interface ClickableSentenceProps {
   wordsIncluded: { word: string; wordIndex: number; origWord: string }[];
   sentenceStyle?: React.CSSProperties;
   sentenceExplanation: string;
+  popRef: React.RefObject<HTMLDivElement> | undefined;
+  spanRef: React.RefObject<HTMLSpanElement> | undefined;
 }
 
 type BreakElementProps = {};
@@ -44,6 +53,8 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     setShowPopover,
     sentenceExplanation,
     sentenceStyle,
+    spanRef,
+    popRef,
   }) => {
     // Split at \n\n and add a divider between each explanation
     const explanationParts = sentenceExplanation
@@ -72,7 +83,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
                     >
                       {part}
                     </Typography.Paragraph>
-                    <Divider key={`divider-${tempIndex}-${index}`}/>
+                    <Divider key={`divider-${tempIndex}-${index}`} />
                   </>
                 );
               }
@@ -95,10 +106,12 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
         trigger="click"
         visible={showPopover}
         onVisibleChange={(visible) => !visible && setShowPopover(null)}
+        ref={popRef}
       >
         <span
           style={{ ...sentenceStyle, marginRight: "5px", cursor: "pointer" }}
           onClick={() => toggleSelection(index)}
+          ref={spanRef}
         >
           {sentence}{" "}
         </span>
@@ -133,12 +146,75 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     number | undefined
   >();
   const [sentences, setSentences] = useState<string[]>([]);
-  // console.log('WordToSentenceIndex', wordToSentenceIndex)
-  // Read dark mode from config
   const { theme: themeToken } = theme.useToken();
   const isDarkMode = themeToken.id === 1;
-
   const { recipeText, annotations } = improvedRecipe;
+  // Ref Map
+  const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
+  refMap["all-word-wrapper"] = useRef<HTMLDivElement>(null);
+  refMap["result-wrapper"] = useRef<HTMLDivElement>(null);
+
+  refMap["first-sentence"] = useRef<HTMLDivElement>(null);
+  refMap["third-sentence"] = useRef<HTMLDivElement>(null);
+  refMap["fifth-sentence"] = useRef<HTMLDivElement>(null);
+
+  refMap["first-sentence-pop"] = useRef<HTMLDivElement>(null);
+  refMap["third-sentence-pop"] = useRef<HTMLDivElement>(null);
+  refMap["fifth-sentence-pop"] = useRef<HTMLDivElement>(null);
+
+  const { startTour, doTour, currentPage, setCurrentPage } =
+    useContext(TourContext);
+  const createTour = () => {
+    const refs: IPageRef[] = [];
+    refs.push({
+      title: "Changes already marked",
+      content: "The changes will already be marked for you.",
+      target: refMap["first-sentence"],
+      onNext: () => {
+        refMap["first-sentence"]?.current?.click();
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: "Why did we do this?",
+      content:
+        "Clicking on a marked change will bring this popup. In this pop up you'll find explanation on why this change was made. Select whether you like or dislike this change.",
+      target: refMap["first-sentence-pop"],
+      onNext: () => {
+        handleAccept(0);
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: "Review ALL the changes!",
+      content: "You'll need to review all the changes!",
+      target: refMap["all-word-wrapper"],
+      onNext: () => {
+        handleAccept(2);
+        handleDecline(4);
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: "Wrapping up!",
+      content:
+        "After you reviewing all the changes you'll be able to submit your results!",
+      target: refMap["result-wrapper"],
+      onClose: () => {
+        finishReview();
+      },
+    });
+    return refs;
+  };
+
+  useEffect(() => {
+    if (!doTour) return;
+    if (currentPage === 5) return;
+    if (currentPage === 4) {
+      setCurrentPage(5);
+      startTour(createTour());
+    }
+  }, [startTour, doTour, currentPage, setCurrentPage, createTour]);
 
   const getSentenceStyle = useCallback(
     (sentenceIndex: number) => {
@@ -328,9 +404,12 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         let wordIndexes: { word: string; wordIndex: number }[];
         if (wordAnnotations !== undefined) {
           wordIndexes = wordAnnotations
-            .map(([origWord, wordAnnotations]) => 
+            .map(([origWord, wordAnnotations]) =>
               wordAnnotations.map(([word, wordIndex]) => {
-                if(wordIndex >= wordIndexCounter && wordIndex < wordIndexCounter + wordsInSentence.length){
+                if (
+                  wordIndex >= wordIndexCounter &&
+                  wordIndex < wordIndexCounter + wordsInSentence.length
+                ) {
                   return {
                     word: word,
                     wordIndex: wordIndex,
@@ -341,7 +420,15 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
               })
             )
             .flat()
-            .filter((item): item is { word: string; wordIndex: number; origWord: string } => item !== null);
+            .filter(
+              (
+                item
+              ): item is {
+                word: string;
+                wordIndex: number;
+                origWord: string;
+              } => item !== null
+            );
           // Map the wordIndexes to the sentenceIndex
           // console.log('Sentence', currentSentenceIndex, 'has words', wordAnnotations, 'between Indexes', wordIndexCounter, 'and', wordIndexCounter + wordsInSentence.length, wordsInSentence)
           wordIndexes.forEach(({ word: _, wordIndex }) => {
@@ -410,37 +497,57 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   const congratsClass = allWordsSelected ? "congrats-text-enter" : "";
   return (
     <Form layout="vertical">
-      <Form.Item>
-        <div style={{ whiteSpace: "pre-wrap", userSelect: "text" }}>
-          {elements.map((element, index) => {
-            if ("sentence" in element) {
-              let currentSentenceExplanation = "";
-              // Iterate over the wordIndexes and add each of their explanations
-              element.wordsIncluded.forEach(({ origWord }) => {
-                const explanation = improvedRecipe.explanations[origWord];
-                if (explanation) {
-                  currentSentenceExplanation +=
-                    origWord + ": " + explanation + "\n\n";
-                }
-              });
-              return (
-                <ClickableSentence
-                  key={`sentence-${index}`}
-                  {...element}
-                  showPopover={showPopover === element.index}
-                  sentenceStyle={getSentenceStyle(element.index)}
-                  setShowPopover={setShowPopover}
-                  sentenceExplanation={currentSentenceExplanation}
-                  onAccept={handleAccept}
-                  onDecline={handleDecline}
-                />
-              );
-            } else {
-              return <br key={`br-${index}`} />;
-            }
-          })}
-        </div>
-      </Form.Item>
+      <span ref={refMap["all-word-wrapper"]}>
+        <Form.Item>
+          <div style={{ whiteSpace: "pre-wrap", userSelect: "text" }}>
+            {elements.map((element, index) => {
+              if ("sentence" in element) {
+                let currentSentenceExplanation = "";
+                // Iterate over the wordIndexes and add each of their explanations
+                element.wordsIncluded.forEach(({ origWord }) => {
+                  const explanation = improvedRecipe.explanations[origWord];
+                  if (explanation) {
+                    currentSentenceExplanation +=
+                      origWord + ": " + explanation + "\n\n";
+                  }
+                });
+                return (
+                  <ClickableSentence
+                    key={`sentence-${index}`}
+                    {...element}
+                    showPopover={showPopover === element.index}
+                    sentenceStyle={getSentenceStyle(element.index)}
+                    setShowPopover={setShowPopover}
+                    sentenceExplanation={currentSentenceExplanation}
+                    onAccept={handleAccept}
+                    onDecline={handleDecline}
+                    popRef={
+                      doTour && currentPage === 3 && index === 0
+                        ? refMap["first-sentence-pop"]
+                        : doTour && currentPage === 3 && index === 2
+                          ? refMap["third-sentence-pop"]
+                          : doTour && currentPage === 3 && index === 4
+                            ? refMap["fifth-word-pop"]
+                            : undefined
+                    }
+                    spanRef={
+                      doTour && currentPage === 3 && index === 0
+                        ? refMap["first-sentence"]
+                        : doTour && currentPage === 3 && index === 2
+                          ? refMap["third-sentence"]
+                          : doTour && currentPage === 3 && index === 4
+                            ? refMap["fifth-sentence"]
+                            : undefined
+                    }
+                  />
+                );
+              } else {
+                return <br key={`br-${index}`} />;
+              }
+            })}
+          </div>
+        </Form.Item>
+      </span>
       {(!waitToFindAllWords || allWordsSelected) && (
         <Form.Item>
           {waitToFindAllWords && (

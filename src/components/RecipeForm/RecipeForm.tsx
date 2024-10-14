@@ -81,16 +81,6 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({ submitHit, api }) => {
       },
     });
     refs.push({
-      title: "Choose your improvement level!",
-      content:
-        "After you have finished writing your recipe, choose the improvement level you want to see!",
-      target: refMap["improvement-level"],
-      onClose: () => {
-        handleSubmit(true);
-        setTourOpen(false);
-      },
-    });
-    refs.push({
       title: "Submit!",
       content: "Send your recipe to the AI chef by clicking here!",
       target: refMap["submit-recipe"],

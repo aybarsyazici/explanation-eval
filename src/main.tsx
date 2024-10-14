@@ -6,10 +6,10 @@ import { catppuccinColors } from "../catppuccin_scheme";
 import { TourProvider } from "./components";
 import { WebSocketProvider } from "./helpers/WebSocketContext.tsx";
 import "./index.css";
-const backendUrl = "wss://gelex-backend-a3bfadfb8f41.herokuapp.com/ws/example-simple";
+import { AppVersionProvider } from "./helpers/AppVersionContext.tsx";
+const backendUrl =
+  "wss://gelex-backend-a3bfadfb8f41.herokuapp.com/ws/example-simple";
 // const backendUrl = 'ws://localhost:8000/ws/example-simple';
-
-
 
 const Main = () => {
   const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -59,11 +59,11 @@ const Main = () => {
         }}
       >
         <WebSocketProvider backendUrl={backendUrl}>
-          <TourProvider>
-            <App
-              setDarkMode={setIsDarkMode}
-            />
-          </TourProvider>
+          <AppVersionProvider>
+            <TourProvider>
+              <App setDarkMode={setIsDarkMode} />
+            </TourProvider>
+          </AppVersionProvider>
         </WebSocketProvider>
       </ConfigProvider>
     </React.StrictMode>

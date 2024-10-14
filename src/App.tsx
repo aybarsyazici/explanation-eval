@@ -14,8 +14,7 @@ import { AppFlow, ResultPage } from "./pages";
 import WelcomeScreen from "./pages/WelcomeScreen/WelcomeScreen";
 import { AppTour, TourContext } from "./components";
 import {
-  AppVersionProvider,
-  useAppVersion,
+  useAppVersionContext,
 } from "./helpers";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
@@ -40,10 +39,16 @@ i18n
 const App: React.FC<AppProps> = ({ setDarkMode }) => {
   const [activeTab, setActiveTab] = useState<string>("app"); // Set 'welcome' as initial state
   const [showWelcomeScreen, setShowWelcomeScreen] = useState<boolean>(true); // Set 'welcome' as initial state
-  const { appVersion } = useAppVersion();
+  const { appVersion } = useAppVersionContext();
   const { setDoTour } = useContext(TourContext);
   useEffect(() => {
-    setDoTour(false);
+    const cookieTour =
+      document.cookie
+        .split(";")
+        .find((cookie) => cookie.includes("tour"))
+        ?.split("=")[1] || "false";
+    console.log("cookieTour", cookieTour);
+    setDoTour(cookieTour === "false");
   }, [setDoTour]);
   // Does cookie for currentMode exist?
   // Read current mode from cookie
@@ -84,7 +89,7 @@ const App: React.FC<AppProps> = ({ setDarkMode }) => {
   };
 
   return (
-    <AppVersionProvider>
+    <>
       {/* <div className="hover-target-parent">
         <div className="hover-target" onMouseOver={handleHoverOverTop} />
       </div> */}
@@ -135,7 +140,7 @@ const App: React.FC<AppProps> = ({ setDarkMode }) => {
         />
       </Layout>
       <AppTour />
-    </AppVersionProvider>
+    </>
   );
 };
 
