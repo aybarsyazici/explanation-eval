@@ -84,7 +84,6 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
             </div>
           </div>
         }
-        title="Sentence Selection"
         trigger="click"
         visible={showPopover}
         onVisibleChange={(visible) => !visible && setShowPopover(null)}

@@ -506,9 +506,13 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                 // Iterate over the wordIndexes and add each of their explanations
                 element.wordsIncluded.forEach(({ origWord }) => {
                   const explanation = improvedRecipe.explanations[origWord];
+                  const origWordWithoutPunctuation = origWord.replace(
+                    /[.,\/#!$%\^&\*;:{}=\-_`~()]/g,
+                    ""
+                  );
                   if (explanation) {
                     currentSentenceExplanation +=
-                      origWord + ": " + explanation + "\n\n";
+                      origWordWithoutPunctuation + ": " + explanation + "\n\n";
                   }
                 });
                 return (

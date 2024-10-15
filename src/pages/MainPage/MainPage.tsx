@@ -27,6 +27,7 @@ import {
 } from "@ant-design/icons";
 import { useAppVersionContext, useWebSocketContext } from "../../helpers";
 import { useTranslation } from "react-i18next";
+import './MainPage.css';
 
 type MainPageProps = {
   api: NotificationInstance;
@@ -123,10 +124,11 @@ export const MainPage: React.FC<MainPageProps> = ({
         annotations: data.annotations,
         explanations: data.explanations_per_word,
       });
-      // // Save the improved recipe to cookie (for debugging)
+      // Save the improved recipe to cookie (for debugging)
       // document.cookie = `savedImprovedRecipe=${JSON.stringify({
       //   recipeText: data.example_recipe,
       //   annotations: data.annotations,
+      //   explanations: data.explanations_per_word,
       // })}`;
       setimprovedRecipeLoading(false);
       setAppStep(2);

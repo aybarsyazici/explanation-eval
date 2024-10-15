@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Form, Popover, Button, Typography, theme, Divider } from "antd";
 import "./ImprovedRecipeDisplay.css";
 import { BackendUserResultDetails, ImprovedRecipe } from "../../../types";
@@ -79,7 +86,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
                     >
                       {part}
                     </Typography.Paragraph>
-                    <Divider key={`divider-${tempIndex}-${index}`}/>
+                    <Divider key={`divider-${tempIndex}-${index}`} />
                   </>
                 );
               }
@@ -97,7 +104,6 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
             </div>
           </div>
         }
-        title="Sentence Selection"
         trigger="click"
         visible={showPopover}
         onVisibleChange={(visible) => !visible && setShowPopover(null)}
@@ -117,7 +123,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     prevProps.showPopover === nextProps.showPopover &&
     prevProps.sentence === nextProps.sentence &&
     JSON.stringify(prevProps.sentenceStyle) ===
-      JSON.stringify(nextProps.sentenceStyle),
+      JSON.stringify(nextProps.sentenceStyle)
 );
 
 export const ImprovedRecipeDisplaySentenceScale: React.FC<
@@ -169,7 +175,8 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     const refs: IPageRef[] = [];
     refs.push({
       title: "Find the changes!",
-      content: "You'll need to find the new sentences that have been added to your recipe!",
+      content:
+        "You'll need to find the new sentences that have been added to your recipe!",
       target: refMap["first-sentence"],
       onNext: () => {
         refMap["first-sentence"]?.current?.click();
@@ -306,12 +313,12 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     setRevealExtraWord(() => () => {
       // Find index that is in annotations but not in selectedWords
       const indicesInAnnotations = Array.from(indices).map((index) =>
-        wordToSentenceIndex.get(index),
+        wordToSentenceIndex.get(index)
       );
       const indicesInSelectedWords = Array.from(selectedSentences.keys());
       const indicesNotSelected = indicesInAnnotations.filter(
         (index) =>
-          index !== undefined && !indicesInSelectedWords.includes(index),
+          index !== undefined && !indicesInSelectedWords.includes(index)
       );
       // console.log('Indices in annotations', indicesInAnnotations)
       // console.log('Indices in selected words', indicesInSelectedWords)
@@ -334,12 +341,12 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     setRevealAllWords(() => () => {
       // Find ALL indices that are in annotations but not in selectedWords
       const indicesInAnnotations = Array.from(indices).map((index) =>
-        wordToSentenceIndex.get(index),
+        wordToSentenceIndex.get(index)
       );
       const indicesInSelectedWords = Array.from(selectedSentences.keys());
       const indicesNotSelected = indicesInAnnotations.filter(
         (index) =>
-          index !== undefined && !indicesInSelectedWords.includes(index),
+          index !== undefined && !indicesInSelectedWords.includes(index)
       );
       // console.log('Indices in annotations', indicesInAnnotations)
       // console.log('Indices in selected words', indicesInSelectedWords)
@@ -363,10 +370,10 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   useEffect(() => {
     // Count the current accepted + declined word count
     const acceptedSentences = Array.from(selectedSentences.values()).filter(
-      (status) => status === "accepted",
+      (status) => status === "accepted"
     ).length;
     const declinedSentences = Array.from(selectedSentences.values()).filter(
-      (status) => status === "declined",
+      (status) => status === "declined"
     ).length;
     const totalWords = acceptedSentences + declinedSentences;
     if (
@@ -424,7 +431,6 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     setShowPopover(null);
   }, []);
 
-
   useEffect(() => {
     let sentenceIndex = 0; // Tracks the index of sentences
     const wordIndexToSentenceIndex = new Map<number, number>();
@@ -454,9 +460,12 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
           let wordIndexes: { word: string; wordIndex: number }[];
           if (wordAnnotations !== undefined) {
             wordIndexes = wordAnnotations
-              .map(([origWord, wordAnnotations]) => 
+              .map(([origWord, wordAnnotations]) =>
                 wordAnnotations.map(([word, wordIndex]) => {
-                  if(wordIndex >= wordIndexCounter && wordIndex < wordIndexCounter + wordsInSentence.length){
+                  if (
+                    wordIndex >= wordIndexCounter &&
+                    wordIndex < wordIndexCounter + wordsInSentence.length
+                  ) {
                     return {
                       word: word,
                       wordIndex: wordIndex,
@@ -467,7 +476,15 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                 })
               )
               .flat()
-              .filter((item): item is { word: string; wordIndex: number; origWord: string } => item !== null);
+              .filter(
+                (
+                  item
+                ): item is {
+                  word: string;
+                  wordIndex: number;
+                  origWord: string;
+                } => item !== null
+              );
 
             // Map the wordIndexes to the sentenceIndex
             // console.log('Sentence', currentSentenceIndex, 'has words', wordAnnotations, 'between Indexes', wordIndexCounter, 'and', wordIndexCounter + wordsInSentence.length, wordsInSentence)
@@ -548,9 +565,13 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
               // Iterate over the wordIndexes and add each of their explanations
               element.wordsIncluded.forEach(({ origWord }) => {
                 const explanation = improvedRecipe.explanations[origWord];
+                const origWordWithoutPunctuation = origWord.replace(
+                  /[.,\/#!$%\^&\*;:{}=\-_`~()]/g,
+                  ""
+                );
                 if (explanation) {
                   currentSentenceExplanation +=
-                    origWord + ": " + explanation + "\n\n";
+                    origWordWithoutPunctuation + ": " + explanation + "\n\n";
                 }
               });
               return (

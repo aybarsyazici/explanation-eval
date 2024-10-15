@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { SmileOutlined } from "@ant-design/icons";
-import { Button, Result, Typography } from "antd";
+import { Button, Result } from "antd";
 import { useTranslation } from "react-i18next";
 
 type ResultPageProps = {
@@ -34,12 +34,9 @@ export const ResultPage: React.FC<ResultPageProps> = ({ setActivePage }) => {
       title={t("ResultsPage.End") + redirectTimer}
       extra={
         <>
-        <Typography.Paragraph>
-          {t("ResultsPage.Code")}
-        </Typography.Paragraph>
-        <Button type="primary" onClick={goToHomepage}>
-          Go now!
-        </Button>
+          <Button type="primary" onClick={goToHomepage}>
+            Go now!
+          </Button>
         </>
       }
     />
