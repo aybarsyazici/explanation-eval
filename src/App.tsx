@@ -47,7 +47,6 @@ const App: React.FC<AppProps> = ({ setDarkMode }) => {
         .split(";")
         .find((cookie) => cookie.includes("tour"))
         ?.split("=")[1] || "false";
-    console.log("cookieTour", cookieTour);
     setDoTour(cookieTour === "false");
   }, [setDoTour]);
   // Does cookie for currentMode exist?

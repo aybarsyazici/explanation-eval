@@ -11,6 +11,7 @@ import { BackendUserResultDetails, ImprovedRecipe } from "../../../types";
 import { DislikeOutlined, LikeOutlined } from "@ant-design/icons";
 import confetti from "canvas-confetti"; // Import the library
 import { IPageRef, TourContext } from "../../AppTour/TourContext";
+import useLogger from "../../../helpers/useLogger";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -149,6 +150,8 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   const { theme: themeToken } = theme.useToken();
   const isDarkMode = themeToken.id === 1;
   const { recipeText, annotations } = improvedRecipe;
+  const { logPopupOpen, logLiked, logDisliked, logWrongSelection, getResults } = useLogger();
+
   // Ref Map
   const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
   refMap["all-word-wrapper"] = useRef<HTMLDivElement>(null);
@@ -350,6 +353,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       sentences: sentences,
       mode: "sentence",
       variant: "WeHighlightWeExplain",
+      timeDetails: getResults(),
     };
     // console.log('Sending to trace backend: ', res)
     sendUserResults(res);
@@ -364,6 +368,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       return newSelected;
     });
     setShowPopover(null);
+    logLiked(index);
   }, []);
 
   // useCallback to memoize the function
@@ -374,6 +379,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       return newSelected;
     });
     setShowPopover(null);
+    logDisliked(index);
   }, []);
 
   useEffect(() => {
@@ -454,12 +460,14 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
               return newSelected;
             });
             setShowPopover(currentSentenceIndex);
+            logPopupOpen(currentSentenceIndex);
           } else {
             setSelectedSentences((prev) => {
               const newSelected = new Map(prev);
               newSelected.set(currentSentenceIndex, "incorrect");
               return newSelected;
             });
+            logWrongSelection(currentSentenceIndex);
             // Clear incorrect status after animation duration
             setTimeout(() => {
               setSelectedSentences((prev) => {

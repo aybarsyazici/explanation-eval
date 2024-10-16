@@ -25,6 +25,14 @@ export type BackendUserResultDetails = {
   sentences?: Array<string>;
   mode: string;
   variant: string;
+  timeDetails: TimeDetail[];
+};
+
+export type TimeDetail = {
+  timestamp: number;
+  detail: "popupOpen" | "liked" | "disliked" | "writeExplanation" | "wrongSelection";
+  currentText?: string;
+  index: number;
 };
 
 export type BackendUserResult = {

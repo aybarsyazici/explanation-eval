@@ -13,7 +13,7 @@ interface AppFlowProps {
   setActivePage: (page: string) => void;
   currentMode: string;
 }
-const backendUrlHttp = "https://gelex-backend-a3bfadfb8f41.herokuapp.com";
+const backendUrlHttp = import.meta.env.VITE_BACKEND_HTTP_URL;
 
 export const AppFlow = ({
   appStep,

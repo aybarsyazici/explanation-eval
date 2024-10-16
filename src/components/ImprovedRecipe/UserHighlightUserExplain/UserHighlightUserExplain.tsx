@@ -6,6 +6,7 @@ import { DislikeOutlined, LikeOutlined } from "@ant-design/icons";
 import confetti from "canvas-confetti"; // Import the library
 import TextArea from "antd/es/input/TextArea";
 import { IPageRef, TourContext } from "../../AppTour/TourContext";
+import useLogger from "../../../helpers/useLogger";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -138,6 +139,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   const { theme: themeToken } = theme.useToken();
   const isDarkMode = themeToken.id === 1;
   const { recipeText, annotations } = improvedRecipe;
+  const { logPopupOpen, logLiked, logDisliked, logWrongSelection, logWriteExplanation, getResults } = useLogger();
 
   // Ref Map
   const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
@@ -391,6 +393,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       sentences: sentences,
       mode: "sentence",
       variant: "UserHighlightUserExplain",
+      timeDetails: getResults(),
     };
     // console.log('Sending to trace backend: ', res)
     sendUserResults(res);
@@ -409,6 +412,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         return newSelected;
       });
       setShowPopover(null);
+      logLiked(index);
     },
     [],
   );
@@ -426,6 +430,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         return newSelected;
       });
       setShowPopover(null);
+      logDisliked(index);
     },
     [],
   );
@@ -498,6 +503,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
               newSelected.set(currentSentenceIndex, "correct");
               return newSelected;
             });
+            logPopupOpen(currentSentenceIndex);
             setShowPopover(currentSentenceIndex);
           } else {
             setSelectedSentences((prev) => {
@@ -505,6 +511,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
               newSelected.set(currentSentenceIndex, "incorrect");
               return newSelected;
             });
+            logWrongSelection(currentSentenceIndex);
             // Clear incorrect status after animation duration
             setTimeout(() => {
               setSelectedSentences((prev) => {
@@ -544,6 +551,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         newExplanations.set(index, newExplanation);
         return newExplanations;
       });
+      logWriteExplanation(index, newExplanation);
     },
     [setSentenceExplanations],
   );

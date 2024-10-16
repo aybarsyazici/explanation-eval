@@ -21,13 +21,10 @@ import {
   BackendUserResultDetails,
 } from "../../types";
 import { NotificationInstance } from "antd/es/notification/interface";
-import {
-  BulbOutlined,
-  QuestionOutlined,
-} from "@ant-design/icons";
+import { BulbOutlined, QuestionOutlined } from "@ant-design/icons";
 import { useAppVersionContext, useWebSocketContext } from "../../helpers";
 import { useTranslation } from "react-i18next";
-import './MainPage.css';
+import "./MainPage.css";
 
 type MainPageProps = {
   api: NotificationInstance;
@@ -50,10 +47,10 @@ export const MainPage: React.FC<MainPageProps> = ({
   const [originalRecipe, setOriginalRecipe] = useState<string>("");
   const [improvementLevel, setImprovementLevel] = useState<number>(0);
   const [revealExtraWord, setRevealExtraWord] = useState<() => void>(
-    () => () => {},
+    () => () => {}
   );
   const [revealAllWords, setRevealAllWords] = useState<() => void>(
-    () => () => {},
+    () => () => {}
   );
   // Does the cookie savedImprovedRecipe exist? (for debugging)
   // const savedImprovedRecipe = document.cookie.split(';').find((cookie) => cookie.includes('savedImprovedRecipe'))?.split('=')[1];
@@ -64,55 +61,56 @@ export const MainPage: React.FC<MainPageProps> = ({
   >();
   const [improvedRecipeLoading, setimprovedRecipeLoading] = useState(false);
   const { appVersion } = useAppVersionContext();
-  const { ws, setOnChildDataReceive, setOnChildErrorReceive } = useWebSocketContext();
+  const { ws, setOnChildDataReceive, setOnChildErrorReceive } =
+    useWebSocketContext();
   const { i18n } = useTranslation();
 
-    // Ref Map
-    const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
-    refMap["improved-recipe-wrapper"] = useRef<HTMLDivElement>(null);
-    refMap["reveal-next-change"] = useRef<HTMLDivElement>(null);
-    refMap["reveal-all-changes"] = useRef<HTMLDivElement>(null);
-    const [refState, setRefState] = useState<IPageRef[]>([]);
+  // Ref Map
+  const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
+  refMap["improved-recipe-wrapper"] = useRef<HTMLDivElement>(null);
+  refMap["reveal-next-change"] = useRef<HTMLDivElement>(null);
+  refMap["reveal-all-changes"] = useRef<HTMLDivElement>(null);
+  const [refState, setRefState] = useState<IPageRef[]>([]);
 
-    // Use useEffect to update refState when appVersion changes
-    useEffect(() => {
-      const newRefState: IPageRef[] = [
-        {
-          title: t("MainPage.TitleImproveRecipe"),
-          content:
-            appVersion < 2
-              ? t("MainPage.ContentWordScale")
-              : t("MainPage.ContentHighlightedChanges"),
-          target: refMap["improved-recipe-wrapper"],
-          onClose: () => {
-            setCurrentPage(4);
-          },
+  // Use useEffect to update refState when appVersion changes
+  useEffect(() => {
+    const newRefState: IPageRef[] = [
+      {
+        title: t("MainPage.TitleImproveRecipe"),
+        content:
+          appVersion < 2
+            ? t("MainPage.ContentWordScale")
+            : t("MainPage.ContentHighlightedChanges"),
+        target: refMap["improved-recipe-wrapper"],
+        onClose: () => {
+          setCurrentPage(4);
         },
-        ...(appVersion < 2
-          ? [
-              {
-                title: t("MainPage.TitleRevealChangesOne"),
-                content: t("MainPage.ContentRevealChangesOne"),
-                target: refMap["reveal-next-change"],
-                onClose: () => {
-                  setCurrentPage(4);
-                },
+      },
+      ...(appVersion < 2
+        ? [
+            {
+              title: t("MainPage.TitleRevealChangesOne"),
+              content: t("MainPage.ContentRevealChangesOne"),
+              target: refMap["reveal-next-change"],
+              onClose: () => {
+                setCurrentPage(4);
               },
-              {
-                title: t("MainPage.TitleRevealChangesAll"),
-                content: t("MainPage.ContentRevealChangesAll"),
-                target: refMap["reveal-all-changes"],
-                onClose: () => {
-                  setCurrentPage(4);
-                },
+            },
+            {
+              title: t("MainPage.TitleRevealChangesAll"),
+              content: t("MainPage.ContentRevealChangesAll"),
+              target: refMap["reveal-all-changes"],
+              onClose: () => {
+                setCurrentPage(4);
               },
-            ]
-          : []),
-      ];
-    
-      // Update refState with the new array
-      setRefState(newRefState);
-    }, [appVersion, t]); // Dependencies: appVersion and t for translations
+            },
+          ]
+        : []),
+    ];
+
+    // Update refState with the new array
+    setRefState(newRefState);
+  }, [appVersion, t]); // Dependencies: appVersion and t for translations
 
   useEffect(() => {
     // Define the function that the parent will call
@@ -143,7 +141,7 @@ export const MainPage: React.FC<MainPageProps> = ({
     const handleError = (error: Event) => {
       console.error("WebSocket error:", error);
       setimprovedRecipeLoading(false);
-      if(!doTour){
+      if (!doTour) {
         setAppStep(0);
         setOriginalRecipe("");
         setImprovedRecipe(undefined);
@@ -163,12 +161,11 @@ export const MainPage: React.FC<MainPageProps> = ({
   const submitHit = async (
     recipe: string,
     improvementLevel: number,
-    fromTour?: boolean,
+    fromTour?: boolean
   ) => {
     if (doTour && fromTour) {
       setImprovedRecipe({
-        recipeText:
-          `This is an example improved recipe. 
+        recipeText: `This is an example improved recipe. 
           Click on the sentences you think are new! 
           You can like or dislike the sentences.
           Depending on the version, what you need to do will change! 
@@ -192,7 +189,7 @@ export const MainPage: React.FC<MainPageProps> = ({
       setAppStep(2);
       return true;
     }
-    // console.log('Submitting recipe mainpage: ', recipe, fromTour) 
+    // console.log('Submitting recipe mainpage: ', recipe, fromTour)
     // Check the length of the recipe
     if (recipe.length < 25) {
       api.error({
@@ -268,7 +265,7 @@ export const MainPage: React.FC<MainPageProps> = ({
       event: "finishReview",
       details: results,
     };
-    // console.log('Submitting results', resultsForBackend);
+    console.log('Submitting results', resultsForBackend);
     // Hit endpoint with results(/trace/)
     fetch(`${backendUrlHttp}/trace`, {
       method: "POST",
@@ -289,7 +286,7 @@ export const MainPage: React.FC<MainPageProps> = ({
           setRevealExtraWord(() => () => {});
           setRevealAllWords(() => () => {});
           finishFn();
-        }),
+        })
       )
       .catch((error) => {
         console.log(error);
@@ -306,10 +303,7 @@ export const MainPage: React.FC<MainPageProps> = ({
     <Space direction="vertical" size="large" style={{ display: "flex" }}>
       <Row gutter={32} style={{ height: "100%" }}>
         <Col span={12} style={{ height: "100%" }}>
-          <RecipeForm
-            submitHit={submitHit}
-            api={api}
-          />
+          <RecipeForm submitHit={submitHit} api={api} />
         </Col>
         <Col span={12}>
           {

@@ -87,7 +87,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       });
       setIsModalOpen(false);
     } else {
-      console.log("Invalid version");
       api.error({
         message: "Error",
         description: t("AppVersion.Invalid"),
@@ -224,7 +223,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   }, [refMap, setCurrentPage]);
 
   useEffect(() => {
-    console.log("WelcomeScreen useEffect", currentPage, appVersion, doTour);
     if (!doTour) return;
     if (currentPage === -1 && appVersion !== -1) {
       startTour(steps);

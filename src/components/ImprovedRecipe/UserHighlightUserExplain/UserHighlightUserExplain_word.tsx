@@ -234,6 +234,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
       timestamp: new Date().toISOString(),
       mode: "word",
       variant: "UserHighlightUserExplain",
+      timeDetails: [],
     };
     console.log("Generated results: ", res);
     sendUserResults(res);
