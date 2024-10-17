@@ -194,7 +194,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
       variant: "WeHighlightUserExplain",
       timeDetails: [],
     };
-    console.log("Generated results: ", res);
+    // console.log("Generated results: ", res);
     sendUserResults(res);
   };
 
@@ -216,7 +216,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
   const toggleWordSelection = useCallback(
     (_: string, index: number) => {
       // Check if for all annotations, the wordIndex exists somewhere
-      console.log("clicked on", index, indices.has(index));
+      // console.log("clicked on", index, indices.has(index));
       if (indices && indices.has(index)) {
         setSelectedWords((prevSelectedWords) => {
           const newSelectedWords = new Map(prevSelectedWords);

@@ -15,14 +15,14 @@ export const traceHit = (
     body: JSON.stringify(resultsForBackend),
   })
     .then((response) =>
-      response.json().then((data) => {
-        console.log("Trace Data:", data);
+      response.json().then((_) => {
+        // console.log("Trace Data:", data);
         // Go to results page.
         result_fn();
       })
     )
     .catch((error) => {
-      console.log(error);
+      console.error(error);
       api.error({
         duration: 0,
         message: "Error",

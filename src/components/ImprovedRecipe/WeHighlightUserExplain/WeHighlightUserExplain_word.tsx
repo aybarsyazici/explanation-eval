@@ -215,7 +215,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
       variant: "WeHighlightUserExplain",
       timeDetails: [],
     };
-    console.log("Generated results: ", res);
+    // console.log("Generated results: ", res);
     sendUserResults(res);
   };
 

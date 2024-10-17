@@ -103,7 +103,6 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
             </div>
           </div>
         }
-        title="Sentence Selection"
         trigger="click"
         visible={showPopover}
         onVisibleChange={(visible) => !visible && setShowPopover(null)}
@@ -514,13 +513,12 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                 // Iterate over the wordIndexes and add each of their explanations
                 element.wordsIncluded.forEach(({ origWord }) => {
                   const explanation = improvedRecipe.explanations[origWord];
-                  const origWordWithoutPunctuation = origWord.replace(
-                    /[.,\/#!$%\^&\*;:{}=\-_`~()]/g,
-                    ""
-                  );
+                  // const origWordWithoutPunctuation = origWord.replace(
+                  //   /[.,\/#!$%\^&\*;:{}=\-_`~()]/g,
+                  //   ""
+                  // );
                   if (explanation) {
-                    currentSentenceExplanation +=
-                      origWordWithoutPunctuation + ": " + explanation + "\n\n";
+                    currentSentenceExplanation += explanation + "\n\n";
                   }
                 });
                 return (

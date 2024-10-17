@@ -21,7 +21,7 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({ submitHit, api }) => {
   const [inputsDisabled, setInputsDisabled] = useState<boolean>(false);
   const { t } = useTranslation();
   const handleSubmit = async (fromTour?: boolean) => {
-    console.log("Submitting recipe: ", recipe);
+    // console.log("Submitting recipe: ", recipe);
     setInputsDisabled(true);
     const resultOfSubmit = await submitHit(recipe, improvementLevel, fromTour);
     if (!resultOfSubmit) {

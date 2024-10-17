@@ -115,7 +115,7 @@ export const MainPage: React.FC<MainPageProps> = ({
   useEffect(() => {
     // Define the function that the parent will call
     const handleData = (data: BackendResponse) => {
-      console.log("WebSocket data received:", data);
+      // console.log("WebSocket data received:", data);
       setImprovementLevel(improvementLevel);
       setImprovedRecipe({
         recipeText: data.example_recipe,
@@ -216,7 +216,7 @@ export const MainPage: React.FC<MainPageProps> = ({
         user_id: userId,
         language: i18n.language,
       } as BackendInput);
-      console.log("Sending data through WebSocket:", dataToSend);
+      // console.log("Sending data through WebSocket:", dataToSend);
 
       // Send data through WebSocket
       ws.send(dataToSend);
@@ -265,7 +265,7 @@ export const MainPage: React.FC<MainPageProps> = ({
       event: "finishReview",
       details: results,
     };
-    console.log('Submitting results', resultsForBackend);
+    // console.log('Submitting results', resultsForBackend);
     // Hit endpoint with results(/trace/)
     fetch(`${backendUrlHttp}/trace`, {
       method: "POST",
@@ -277,7 +277,7 @@ export const MainPage: React.FC<MainPageProps> = ({
     })
       .then((response) =>
         response.json().then((data) => {
-          console.log("Trace Data:", data);
+          console.error("Trace Data:", data);
           // Go to results page.
           // Reset all the states
           setOriginalRecipe("");
@@ -289,7 +289,7 @@ export const MainPage: React.FC<MainPageProps> = ({
         })
       )
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         api.error({
           duration: 0,
           message: "Error",
