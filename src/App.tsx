@@ -25,11 +25,19 @@ type AppProps = {
   setDarkMode: (isDarkMode: boolean) => void;
 };
 
+// Does language cookie exist?
+// Read language from cookie
+const cookieLanguage =
+  document.cookie
+    .split(";")
+    .find((cookie) => cookie.includes("language"))
+    ?.split("=")[1] || "en";
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
-    lng: "en",
+    lng: cookieLanguage,
 
     interpolation: {
       escapeValue: false, // react already safes from xss

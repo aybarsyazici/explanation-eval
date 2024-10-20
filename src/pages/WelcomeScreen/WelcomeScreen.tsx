@@ -144,6 +144,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         break;
       case "lang-switch":
         i18n.changeLanguage(i18n.language === "en" ? "fr" : "en");
+        // Set the cookie
+        document.cookie = `language=${i18n.language}`;
         break;
       default:
         if (key !== "app") return;
