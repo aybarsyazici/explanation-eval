@@ -1,4 +1,4 @@
-import { Card, Col, Empty, Popover, Row, Space } from "antd";
+import { Card, Col, Empty, Row, Space } from "antd";
 import {
   UserHighlightWeExplain,
   UserHighlightWeExplain_word,
@@ -21,7 +21,7 @@ import {
   BackendUserResultDetails,
 } from "../../types";
 import { NotificationInstance } from "antd/es/notification/interface";
-import { BulbOutlined, QuestionOutlined } from "@ant-design/icons";
+// import { BulbOutlined, QuestionOutlined } from "@ant-design/icons";
 import { useAppVersionContext, useWebSocketContext } from "../../helpers";
 import { useTranslation } from "react-i18next";
 import "./MainPage.css";
@@ -46,12 +46,8 @@ export const MainPage: React.FC<MainPageProps> = ({
     useContext(TourContext);
   const [originalRecipe, setOriginalRecipe] = useState<string>("");
   const [improvementLevel, setImprovementLevel] = useState<number>(0);
-  const [revealExtraWord, setRevealExtraWord] = useState<() => void>(
-    () => () => {}
-  );
-  const [revealAllWords, setRevealAllWords] = useState<() => void>(
-    () => () => {}
-  );
+  const [__, setRevealExtraWord] = useState<() => void>(() => () => {});
+  const [_, setRevealAllWords] = useState<() => void>(() => () => {});
   // Does the cookie savedImprovedRecipe exist? (for debugging)
   // const savedImprovedRecipe = document.cookie.split(';').find((cookie) => cookie.includes('savedImprovedRecipe'))?.split('=')[1];
   // If it exists parse the JSON
@@ -86,26 +82,26 @@ export const MainPage: React.FC<MainPageProps> = ({
           setCurrentPage(4);
         },
       },
-      ...(appVersion < 2
-        ? [
-            {
-              title: t("MainPage.TitleRevealChangesOne"),
-              content: t("MainPage.ContentRevealChangesOne"),
-              target: refMap["reveal-next-change"],
-              onClose: () => {
-                setCurrentPage(4);
-              },
-            },
-            {
-              title: t("MainPage.TitleRevealChangesAll"),
-              content: t("MainPage.ContentRevealChangesAll"),
-              target: refMap["reveal-all-changes"],
-              onClose: () => {
-                setCurrentPage(4);
-              },
-            },
-          ]
-        : []),
+      // ...(appVersion < 2
+      //   ? [
+      //       {
+      //         title: t("MainPage.TitleRevealChangesOne"),
+      //         content: t("MainPage.ContentRevealChangesOne"),
+      //         target: refMap["reveal-next-change"],
+      //         onClose: () => {
+      //           setCurrentPage(4);
+      //         },
+      //       },
+      //       {
+      //         title: t("MainPage.TitleRevealChangesAll"),
+      //         content: t("MainPage.ContentRevealChangesAll"),
+      //         target: refMap["reveal-all-changes"],
+      //         onClose: () => {
+      //           setCurrentPage(4);
+      //         },
+      //       },
+      //     ]
+      //   : []),
     ];
 
     // Update refState with the new array
@@ -216,7 +212,7 @@ export const MainPage: React.FC<MainPageProps> = ({
         user_id: userId,
         language: i18n.language,
       } as BackendInput);
-      // console.log("Sending data through WebSocket:", dataToSend);
+      console.log("Sending data through WebSocket:", dataToSend);
 
       // Send data through WebSocket
       ws.send(dataToSend);
@@ -313,32 +309,32 @@ export const MainPage: React.FC<MainPageProps> = ({
                 title={t("MainPage.ImprovedRecipe")}
                 loading={improvedRecipeLoading}
                 ref={refMap["improved-recipe-wrapper"]}
-                actions={[
-                  <Popover
-                    content={
-                      "Reveal one extra " +
-                      (currentMode === "sentence" ? "sentence" : "word") +
-                      "!"
-                    }
-                  >
-                    <QuestionOutlined
-                      onClick={revealExtraWord}
-                      ref={refMap["reveal-next-change"]}
-                    />
-                  </Popover>,
-                  <Popover
-                    content={
-                      "Reveal all " +
-                      (currentMode === "sentence" ? "sentences" : "words") +
-                      "!"
-                    }
-                  >
-                    <BulbOutlined
-                      onClick={revealAllWords}
-                      ref={refMap["reveal-all-changes"]}
-                    />
-                  </Popover>,
-                ]}
+                // actions={[
+                //   <Popover
+                //     content={
+                //       "Reveal one extra " +
+                //       (currentMode === "sentence" ? "sentence" : "word") +
+                //       "!"
+                //     }
+                //   >
+                //     <QuestionOutlined
+                //       onClick={revealExtraWord}
+                //       ref={refMap["reveal-next-change"]}
+                //     />
+                //   </Popover>,
+                //   <Popover
+                //     content={
+                //       "Reveal all " +
+                //       (currentMode === "sentence" ? "sentences" : "words") +
+                //       "!"
+                //     }
+                //   >
+                //     <BulbOutlined
+                //       onClick={revealAllWords}
+                //       ref={refMap["reveal-all-changes"]}
+                //     />
+                //   </Popover>,
+                // ]}
               >
                 {appVersion === 1 &&
                   improvedRecipe &&
@@ -348,6 +344,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                       sendUserResults={finishReview}
                       setRevealExtraWord={setRevealExtraWord}
                       setRevealAllWords={setRevealAllWords}
+                      waitToFindAllWords={false}
                     />
                   )}
                 {appVersion === 1 &&
@@ -358,6 +355,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                       sendUserResults={finishReview}
                       setRevealExtraWord={setRevealExtraWord}
                       setRevealAllWords={setRevealAllWords}
+                      waitToFindAllWords={false}
                     />
                   )}
                 {appVersion === 0 &&
@@ -368,6 +366,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                       sendUserResults={finishReview}
                       setRevealExtraWord={setRevealExtraWord}
                       setRevealAllWords={setRevealAllWords}
+                      waitToFindAllWords={false}
                     />
                   )}
                 {appVersion === 0 &&
@@ -378,6 +377,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                       sendUserResults={finishReview}
                       setRevealExtraWord={setRevealExtraWord}
                       setRevealAllWords={setRevealAllWords}
+                      waitToFindAllWords={false}
                     />
                   )}
                 {!improvedRecipe && <Empty description="No recipe yet!" />}
@@ -396,12 +396,14 @@ export const MainPage: React.FC<MainPageProps> = ({
                   <WeHighlightUserExplain
                     improvedRecipe={improvedRecipe}
                     sendUserResults={finishReview}
+                    waitToFindAllWords={false}
                   />
                 )}
               {appVersion === 2 && improvedRecipe && currentMode === "word" && (
                 <WeHighlightUserExplain_word
                   improvedRecipe={improvedRecipe}
                   sendUserResults={finishReview}
+                  waitToFindAllWords={false}
                 />
               )}
               {appVersion === 3 &&
@@ -410,12 +412,14 @@ export const MainPage: React.FC<MainPageProps> = ({
                   <WeHighlightWeExplain
                     improvedRecipe={improvedRecipe}
                     sendUserResults={finishReview}
+                    waitToFindAllWords={false}
                   />
                 )}
               {appVersion === 3 && improvedRecipe && currentMode === "word" && (
                 <WeHighlightWeExplain_word
                   improvedRecipe={improvedRecipe}
                   sendUserResults={finishReview}
+                  waitToFindAllWords={false}
                 />
               )}
               {!improvedRecipe && <Empty description="No recipe yet!" />}
