@@ -570,7 +570,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
             className={submitButtonClass}
             onClick={finishReview}
           >
-            Submit your results!
+            {t("SubmitResults")}
           </Button>
         </Form.Item>
       )}

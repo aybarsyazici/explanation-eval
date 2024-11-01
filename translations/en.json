@@ -129,5 +129,7 @@
       "Step4Description": "After you feel like you have done enough, you can submit your results whenever you want!"
     }
   },
-  "ExplanationPlaceHolder": "Write a small explanation, at least 5 characters"
+  "ExplanationPlaceHolder": "Write a small explanation, at least 5 characters",
+  "SeeExplanationCheckbox": "See a suggested explanation",
+  "SubmitResults": "Submit your response"
 }

@@ -128,5 +128,7 @@
       "step4Description": "Après avoir l'impression d'en avoir fait assez, vous pouvez soumettre vos résultats quand vous le souhaitez!"
     }
   },
-  "ExplanationPlaceHolder": "Écrivez une petite explication, au moins 5 caractères"
+  "ExplanationPlaceHolder": "Expliquez brièvement le changement, au moins 5 caractères",
+  "SeeExplanationCheckbox": "Voir une proposition d'explication",
+  "SubmitResults": "Soumettre votre réponse"
 }

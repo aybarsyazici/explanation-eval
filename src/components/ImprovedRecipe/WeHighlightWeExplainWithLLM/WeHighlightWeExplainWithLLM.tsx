@@ -101,7 +101,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
               setSeeExplanation(e.target.checked)
               logSeeLLMExplanation(index, e.target.checked);
             }}>
-              See LLM Explanation
+              {t("SeeExplanationCheckbox")}
             </Checkbox>
             <div className={`smooth-expand ${seeExplanation ? "open" : ""}`}>
               {seeExplanation &&
@@ -639,7 +639,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
             className={submitButtonClass}
             onClick={finishReview}
           >
-            Submit your results!
+            {t("SubmitResults")}
           </Button>
         </Form.Item>
       )}
