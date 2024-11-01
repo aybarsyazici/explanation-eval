@@ -17,7 +17,7 @@ import {
   useAppVersionContext,
 } from "./helpers";
 import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
+import { initReactI18next, useTranslation } from "react-i18next";
 import { resources } from "../i18n.ts";
 import { ForkOutlined, MenuOutlined } from "@ant-design/icons";
 
@@ -49,6 +49,7 @@ const App: React.FC<AppProps> = ({ setDarkMode }) => {
   const [showWelcomeScreen, setShowWelcomeScreen] = useState<boolean>(true); // Set 'welcome' as initial state
   const { appVersion } = useAppVersionContext();
   const { setDoTour } = useContext(TourContext);
+  const { t } = useTranslation();
   useEffect(() => {
     const cookieTour =
       document.cookie
@@ -142,7 +143,7 @@ const App: React.FC<AppProps> = ({ setDarkMode }) => {
         <FloatButton
           icon={<ForkOutlined />}
           type="primary"
-          tooltip={`current app version ${appVersion}`}
+          tooltip={`${t("currentAppVersion")}: ${appVersion}`}
           /*@ts-ignore*/
         />
       </Layout>

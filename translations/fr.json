@@ -130,5 +130,6 @@
   },
   "ExplanationPlaceHolder": "Expliquez brièvement le changement, au moins 5 caractères",
   "SeeExplanationCheckbox": "Voir une proposition d'explication",
-  "SubmitResults": "Soumettre votre réponse"
+  "SubmitResults": "Soumettre votre réponse",
+  "CurrentAppVersion": "Version actuelle de l'application: "
 }
