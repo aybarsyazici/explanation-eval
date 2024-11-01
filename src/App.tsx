@@ -31,7 +31,7 @@ const cookieLanguage =
   document.cookie
     .split(";")
     .find((cookie) => cookie.includes("language"))
-    ?.split("=")[1] || "en";
+    ?.split("=")[1] || "fr";
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next

@@ -10,6 +10,8 @@ import confetti from "canvas-confetti"; // Import the library
 import TextArea from "antd/es/input/TextArea";
 import { IPageRef, TourContext } from "../../AppTour/TourContext";
 import useLogger from "../../../helpers/useLogger";
+import { useTranslation } from "react-i18next";
+import { TFunction } from "i18next";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -32,6 +34,7 @@ interface ClickableSentenceProps {
   handleExplanationChange: (index: number, newExplanation: string) => void;
   popRef: React.RefObject<HTMLDivElement> | undefined;
   spanRef: React.RefObject<HTMLSpanElement> | undefined;
+  t: TFunction
 }
 
 type BreakElementProps = {};
@@ -56,13 +59,14 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     sentenceStyle,
     spanRef,
     popRef,
+    t
   }) => {
     return (
       <Popover
         content={
           <div>
             <TextArea
-              placeholder="Write a small explanation, at least 5 characters"
+              placeholder={t("ExplanationPlaceHolder")}
               autoSize={{ minRows: 3, maxRows: 5 }}
               style={{ marginBottom: "5px" }}
               value={sentenceExplanation}
@@ -112,6 +116,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
 export const ImprovedRecipeDisplaySentenceScale: React.FC<
   ImprovedRecipeDisplayProps
 > = ({ improvedRecipe, sendUserResults, waitToFindAllWords = true }) => {
+  const { t } = useTranslation();
   const [sentenceExplanations, setSentenceExplanations] = useState<
     Map<number, string>
   >(new Map());
@@ -153,48 +158,44 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   const { startTour, doTour, currentPage, setCurrentPage } =
     useContext(TourContext);
   const createTour = () => {
-    const refs: IPageRef[] = [];
-    refs.push({
-      title: "Changes already marked",
-      content: "The changes will already be marked for you.",
-      target: refMap["first-sentence"],
-      onNext: () => {
-        refMap["first-sentence"]?.current?.click();
-      },
-      preventClose: true,
-    });
-    refs.push({
-      title: "Why did we do this?",
-      content:
-        "Clicking on a marked change will bring this popup. \
-        In this pop up you'll be asked to explain why you think this change was made. \
-        Also, select whether you like or dislike this change.",
-      target: refMap["first-sentence-pop"],
-      onNext: () => {
-        handleAccept(0, "explanation from tour");
-      },
-      preventClose: true,
-    });
-    refs.push({
-      title: "Review ALL the changes!",
-      content: "You'll need to review all the changes!",
-      target: refMap["all-word-wrapper"],
-      onNext: () => {
-        handleAccept(2, "explanation from tour");
-        handleDecline(4, "explanation from tour");
-      },
-      preventClose: true,
-    });
-    refs.push({
-      title: "Wrapping up!",
-      content:
-        "After you reviewing all the changes you'll be able to submit your results!",
-      target: refMap["result-wrapper"],
-      onClose: () => {
-        finishReview();
-      },
-    });
-    return refs;
+      const refs: IPageRef[] = [];
+      refs.push({
+        title: t("WeHighlightUserExplain.Tour.step1Title"),
+        content: t("WeHighlightUserExplain.Tour.step1Description"),
+        target: refMap["first-sentence"],
+        onNext: () => {
+          refMap["first-sentence"]?.current?.click();
+        },
+        preventClose: true,
+      });
+      refs.push({
+        title: t("WeHighlightUserExplain.Tour.step2Title"),
+        content: t("WeHighlightUserExplain.Tour.step2Description"),
+        target: refMap["first-sentence-pop"],
+        onNext: () => {
+          handleAccept(0, "explanation from tour");
+        },
+        preventClose: true,
+      });
+      refs.push({
+        title: t("WeHighlightUserExplain.Tour.step3Title"),
+        content: t("WeHighlightUserExplain.Tour.step3Description"),
+        target: refMap["all-word-wrapper"],
+        onNext: () => {
+          handleAccept(2, "explanation from tour");
+          handleDecline(4, "explanation from tour");
+        },
+        preventClose: true,
+      });
+      refs.push({
+        title: t("WeHighlightUserExplain.Tour.step4Title"),
+        content: t("WeHighlightUserExplain.Tour.step4Description"),
+        target: refMap["result-wrapper"],
+        onClose: () => {
+          finishReview();
+        },
+      });
+      return refs;
   };
 
   useEffect(() => {
@@ -557,6 +558,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                           ? refMap["fifth-sentence"]
                           : undefined
                   }
+                  t={t}
                 />
               );
             } else {

@@ -7,6 +7,7 @@ import confetti from "canvas-confetti"; // Import the library
 import TextArea from "antd/es/input/TextArea";
 import { IPageRef, TourContext } from "../../AppTour/TourContext";
 import useLogger from "../../../helpers/useLogger";
+import { TFunction } from "i18next";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -31,6 +32,7 @@ interface ClickableSentenceProps {
   handleExplanationChange: (index: number, newExplanation: string) => void;
   popRef: React.RefObject<HTMLDivElement> | undefined;
   spanRef: React.RefObject<HTMLSpanElement> | undefined;
+  t: TFunction<"translation", undefined>;
 }
 
 type BreakElementProps = {};
@@ -55,13 +57,14 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     sentenceStyle,
     popRef,
     spanRef,
+    t
   }) => {
     return (
       <Popover
         content={
           <div>
             <TextArea
-              placeholder="Write a small explanation, at least 5 characters"
+              placeholder={t("ExplanationPlaceHolder")}
               autoSize={{ minRows: 3, maxRows: 5 }}
               style={{ marginBottom: "5px" }}
               value={sentenceExplanation}

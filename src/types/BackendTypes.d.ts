@@ -30,8 +30,9 @@ export type BackendUserResultDetails = {
 
 export type TimeDetail = {
   timestamp: number;
-  detail: "popupOpen" | "liked" | "disliked" | "writeExplanation" | "wrongSelection";
+  detail: "popupOpen" | "liked" | "disliked" | "writeExplanation" | "wrongSelection" | "seeLLMExplanation";
   currentText?: string;
+  open?: boolean;
   index: number;
 };
 

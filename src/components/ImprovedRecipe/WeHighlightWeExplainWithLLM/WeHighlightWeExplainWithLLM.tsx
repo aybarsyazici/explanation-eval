@@ -5,14 +5,25 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Form, Popover, Button, Typography, theme, Divider } from "antd";
+import {
+  Form,
+  Popover,
+  Button,
+  Typography,
+  theme,
+  Divider,
+  Checkbox,
+  Space,
+} from "antd";
 import "./ImprovedRecipeDisplay.css";
 import { BackendUserResultDetails, ImprovedRecipe } from "../../../types";
 import { DislikeOutlined, LikeOutlined } from "@ant-design/icons";
 import confetti from "canvas-confetti"; // Import the library
 import { IPageRef, TourContext } from "../../AppTour/TourContext";
 import useLogger from "../../../helpers/useLogger";
+import TextArea from "antd/es/input/TextArea";
 import { useTranslation } from "react-i18next";
+import { TFunction } from "i18next";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -32,8 +43,12 @@ interface ClickableSentenceProps {
   wordsIncluded: { word: string; wordIndex: number; origWord: string }[];
   sentenceStyle?: React.CSSProperties;
   sentenceExplanation: string;
+  LLMSentenceExplanation: string;
+  handleExplanationChange: (index: number, newExplanation: string) => void;
   popRef: React.RefObject<HTMLDivElement> | undefined;
   spanRef: React.RefObject<HTMLSpanElement> | undefined;
+  logSeeLLMExplanation: (index: number, open: boolean) => void;
+  t: TFunction<"translation", undefined>;
 }
 
 type BreakElementProps = {};
@@ -54,42 +69,67 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
     showPopover,
     setShowPopover,
     sentenceExplanation,
+    LLMSentenceExplanation,
+    handleExplanationChange,
     sentenceStyle,
     spanRef,
     popRef,
+    logSeeLLMExplanation,
+    t
   }) => {
+    const [seeExplanation, setSeeExplanation] = useState(false);
     // Split at \n\n and add a divider between each explanation
-    const explanationParts = sentenceExplanation
-      .split("\n\n")
-      .filter((part) => part !== "");
+    const explanationParts = LLMSentenceExplanation.split("\n\n").filter(
+      (part) => part !== ""
+    );
     return (
       <Popover
         className="explanation-popover"
         style={{ width: "33%" }}
         content={
-          <div>
-            {explanationParts.map((part, tempIndex) => {
-              if (tempIndex === explanationParts.length - 1) {
-                return (
-                  <Typography.Paragraph
-                    key={`explanation-${tempIndex}-${index}`}
-                  >
-                    {part}
-                  </Typography.Paragraph>
-                );
-              } else {
-                return (
-                  <>
-                    <Typography.Paragraph
-                      key={`explanation-${tempIndex}-${index}`}
-                    >
-                      {part}
-                    </Typography.Paragraph>
-                    <Divider key={`divider-${tempIndex}-${index}`} />
-                  </>
-                );
-              }
-            })}
+          <Space direction="vertical" size="small" style={{ display: "flex" }}>
+            <TextArea
+              placeholder={t("ExplanationPlaceHolder")}
+              autoSize={{ minRows: 3, maxRows: 5 }}
+              style={{ marginBottom: "5px" }}
+              value={sentenceExplanation}
+              onChange={(e) => {
+                handleExplanationChange(index, e.target.value);
+              }}
+            />
+            <Checkbox onChange={(e) => {
+              setSeeExplanation(e.target.checked)
+              logSeeLLMExplanation(index, e.target.checked);
+            }}>
+              See LLM Explanation
+            </Checkbox>
+            <div className={`smooth-expand ${seeExplanation ? "open" : ""}`}>
+              {seeExplanation &&
+                explanationParts.map((part, tempIndex) => {
+                  if (tempIndex === explanationParts.length - 1) {
+                    return (
+                      <Typography.Paragraph
+                        key={`explanation-${tempIndex}-${index}`}
+                        className="split-open"
+                      >
+                        {part}
+                      </Typography.Paragraph>
+                    );
+                  } else {
+                    return (
+                      <div className="split-open">
+                        <Typography.Paragraph
+                          key={`explanation-${tempIndex}-${index}`}
+                          className="fade-in"
+                        >
+                          {part}
+                        </Typography.Paragraph>
+                        <Divider key={`divider-${tempIndex}-${index}`} />
+                      </div>
+                    );
+                  }
+                })}
+            </div>
 
             <div className="like-dislike-container">
               <Button className="like-button" onClick={() => onAccept(index)}>
@@ -102,7 +142,7 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
                 <DislikeOutlined />
               </Button>
             </div>
-          </div>
+          </Space>
         }
         trigger="click"
         visible={showPopover}
@@ -133,6 +173,9 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   ImprovedRecipeDisplayProps
 > = ({ improvedRecipe, sendUserResults, waitToFindAllWords = true }) => {
   const { t } = useTranslation();
+  const [sentenceExplanations, setSentenceExplanations] = useState<
+    Map<number, string>
+  >(new Map());
   const [selectedSentences, setSelectedSentences] = useState<
     Map<number, string>
   >(new Map());
@@ -151,7 +194,15 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   const { theme: themeToken } = theme.useToken();
   const isDarkMode = themeToken.id === 1;
   const { recipeText, annotations } = improvedRecipe;
-  const { logPopupOpen, logLiked, logDisliked, logWrongSelection, getResults } = useLogger();
+  const {
+    logPopupOpen,
+    logLiked,
+    logDisliked,
+    logWrongSelection,
+    logWriteExplanation,
+    getResults,
+    logSeeLLMExplanation,
+  } = useLogger();
 
   // Ref Map
   const refMap: Record<string, React.RefObject<HTMLDivElement>> = {};
@@ -169,45 +220,45 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   const { startTour, doTour, currentPage, setCurrentPage } =
     useContext(TourContext);
   const createTour = () => {
-      const refs: IPageRef[] = [];
-      refs.push({
-        title: t("WeHighlightWeExplain.Tour.step1Title"),
-        content: t("WeHighlightWeExplain.Tour.step1Description"),
-        target: refMap["first-sentence"],
-        onNext: () => {
-          refMap["first-sentence"]?.current?.click();
-        },
-        preventClose: true,
-      });
-      refs.push({
-        title: t("WeHighlightWeExplain.Tour.step2Title"),
-        content: t("WeHighlightWeExplain.Tour.step2Description"),
-        target: refMap["first-sentence-pop"],
-        onNext: () => {
-          handleAccept(0);
-        },
-        preventClose: true,
-      });
-      refs.push({
-        title: t("WeHighlightWeExplain.Tour.step3Title"),
-        content: t("WeHighlightWeExplain.Tour.step3Description"),
-        target: refMap["all-word-wrapper"],
-        onNext: () => {
-          handleAccept(2);
-          handleDecline(4);
-        },
-        preventClose: true,
-      });
-      refs.push({
-        title: t("WeHighlightWeExplain.Tour.step4Title"),
-        content: t("WeHighlightWeExplain.Tour.step4Description"),
-        target: refMap["result-wrapper"],
-        onClose: () => {
-          finishReview();
-        },
-      });
-      return refs;
-    };
+    const refs: IPageRef[] = [];
+    refs.push({
+      title: t("WeHighlightWeExplainWithLLM.Tour.step1Title"),
+      content: t("WeHighlightWeExplainWithLLM.Tour.step1Description"),
+      target: refMap["first-sentence"],
+      onNext: () => {
+        refMap["first-sentence"]?.current?.click();
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: t("WeHighlightWeExplainWithLLM.Tour.step2Title"),
+      content: t("WeHighlightWeExplainWithLLM.Tour.step2Description"),
+      target: refMap["first-sentence-pop"],
+      onNext: () => {
+        handleAccept(0);
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: t("WeHighlightWeExplainWithLLM.Tour.step3Title"),
+      content: t("WeHighlightWeExplainWithLLM.Tour.step3Description"),
+      target: refMap["all-word-wrapper"],
+      onNext: () => {
+        handleAccept(2);
+        handleDecline(4);
+      },
+      preventClose: true,
+    });
+    refs.push({
+      title: t("WeHighlightWeExplainWithLLM.Tour.step4Title"),
+      content: t("WeHighlightWeExplainWithLLM.Tour.step4Description"),
+      target: refMap["result-wrapper"],
+      onClose: () => {
+        finishReview();
+      },
+    });
+    return refs;
+  };
 
   useEffect(() => {
     if (!doTour) return;
@@ -351,7 +402,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       timestamp: new Date().toISOString(),
       sentences: sentences,
       mode: "sentence",
-      variant: "WeHighlightWeExplain",
+      variant: "WeHighlightWeExplainWithLLM",
       timeDetails: getResults(),
     };
     // console.log('Sending to trace backend: ', res)
@@ -499,6 +550,18 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     setSentences(sentencesTemp);
   }, [recipeText, annotations]);
 
+  const handleExplanationChange = useCallback(
+    (index: number, newExplanation: string) => {
+      setSentenceExplanations((prev) => {
+        const newExplanations = new Map(prev);
+        newExplanations.set(index, newExplanation);
+        return newExplanations;
+      });
+      logWriteExplanation(index, newExplanation);
+    },
+    [setSentenceExplanations]
+  );
+
   // Animation classes added to the elements
   const submitButtonClass = allWordsSelected ? "submit-button-enter" : "";
   const congratsClass = allWordsSelected ? "congrats-text-enter" : "";
@@ -528,7 +591,12 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                     showPopover={showPopover === element.index}
                     sentenceStyle={getSentenceStyle(element.index)}
                     setShowPopover={setShowPopover}
-                    sentenceExplanation={currentSentenceExplanation}
+                    sentenceExplanation={
+                      sentenceExplanations.get(element.index) || ""
+                    }
+                    LLMSentenceExplanation={currentSentenceExplanation}
+                    handleExplanationChange={handleExplanationChange}
+                    logSeeLLMExplanation={logSeeLLMExplanation}
                     onAccept={handleAccept}
                     onDecline={handleDecline}
                     popRef={
@@ -549,6 +617,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
                             ? refMap["fifth-sentence"]
                             : undefined
                     }
+                    t={t}
                   />
                 );
               } else {

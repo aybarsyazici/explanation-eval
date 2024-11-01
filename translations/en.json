@@ -70,7 +70,13 @@
       "Level4": "Significant Improvement",
       "Level5": "Major Improvement"
     },
-    "Warning": "Note this might result in a significant deviation from the original recipe."
+    "Warning": "Note this might result in a significant deviation from the original recipe.",
+    "Tour": {
+      "step1Title": "Your Recipe",
+      "step1Description": "Write your recipe! Any recipe is fine, but make sure it's at least 25 characters long!",
+      "step2Title": "Submit!",
+      "step2Description": "Send your recipe to the AI chef by clicking here!"
+    }
   },
   "guider": {
     "step1Title": "Your Recipe",
@@ -86,5 +92,42 @@
     "Submit": "Finish Review",
     "CardTitle": "Example Recipe",
     "PostTestDescription": "Write the possible improvements for the recipe given on the right"
-  }
+  },
+  "WeHighlightWeExplainWithLLM": {
+    "Tour": {
+      "Step1Title": "Changes already marked",
+      "Step1Description": "The changes will already be marked for you.",
+      "Step2Title": "Why did we do this?",
+      "Step2Description": "Clicking on a marked change will bring this popup. In this pop up you'll be asked to write why you think we made this change. You'll also be able to see an explanation made by AI. Select whether you like or dislike this change.",
+      "Step3Title": "Review the changes!",
+      "Step3Description": "Go through as many changes as you want!",
+      "Step4Title": "Wrapping up!",
+      "Step4Description": "After you feel like you have done enough, you can submit your results whenever you want!"
+    }
+  },
+  "WeHighlightWeExplain": {
+    "Tour": {
+      "Step1Title": "Changes already marked",
+      "Step1Description": "The changes will already be marked for you.",
+      "Step2Title": "Why did we do this?",
+      "Step2Description": "Clicking on a marked change will bring this popup. In this pop up you'll find explanation on why this change was made. Select whether you like or dislike this change.",
+      "Step3Title": "Review the changes!",
+      "Step3Description": "Go through as many changes as you want!",
+      "Step4Title": "Wrapping up!",
+      "Step4Description": "After you feel like you have done enough, you can submit your results whenever you want!"
+    }
+  },
+  "WeHighlightUserExplain":{
+    "Tour": {
+      "Step1Title": "Changes already marked",
+      "Step1Description": "The changes will already be marked for you.",
+      "Step2Title": "Why did we do this?",
+      "Step2Description": "Clicking on a marked change will bring this popup. In this pop up you'll be asked to explain why you think this change was made. Also, select whether you like or dislike this change.",
+      "Step3Title": "Review the changes!",
+      "Step3Description": "Go through as many changes as you want!",
+      "Step4Title": "Wrapping up!",
+      "Step4Description": "After you feel like you have done enough, you can submit your results whenever you want!"
+    }
+  },
+  "ExplanationPlaceHolder": "Write a small explanation, at least 5 characters"
 }

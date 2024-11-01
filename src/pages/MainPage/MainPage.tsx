@@ -1,16 +1,11 @@
-import { Card, Col, Empty, Row, Space } from "antd";
+import { Card, Col, Empty, Row, Space, Typography } from "antd";
 import {
-  UserHighlightWeExplain,
-  UserHighlightWeExplain_word,
   RecipeForm,
-  UserHighlightUserExplain,
-  UserHighlightUserExplain_word,
   WeHighlightUserExplain,
-  WeHighlightUserExplain_word,
   WeHighlightWeExplain,
-  WeHighlightWeExplain_word,
   TourContext,
   IPageRef,
+  WeHighlightWeExplainWithLLM,
 } from "../../components";
 import { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -38,7 +33,6 @@ export const MainPage: React.FC<MainPageProps> = ({
   api,
   setAppStep,
   finishFn,
-  currentMode,
   backendUrlHttp,
 }) => {
   const { t } = useTranslation();
@@ -174,10 +168,10 @@ export const MainPage: React.FC<MainPageProps> = ({
           tour: [["tour", 34]],
         },
         explanations: {
-          This: "This is an example explanation.",
-          an: "This is an example explanation.",
-          like: "This is an example explanation.",
-          tour: "This is an example explanation.",
+          0: "This is an example explanation.",
+          2: "This is an example explanation.",
+          16: "This is an example explanation.",
+          34: "This is an example explanation.",
         },
       });
       setCurrentPage(3);
@@ -212,7 +206,7 @@ export const MainPage: React.FC<MainPageProps> = ({
         user_id: userId,
         language: i18n.language,
       } as BackendInput);
-      console.log("Sending data through WebSocket:", dataToSend);
+      // console.log("Sending data through WebSocket:", dataToSend);
 
       // Send data through WebSocket
       ws.send(dataToSend);
@@ -302,129 +296,44 @@ export const MainPage: React.FC<MainPageProps> = ({
           <RecipeForm submitHit={submitHit} api={api} />
         </Col>
         <Col span={12}>
-          {
-            // App version 0 & 1 has the user highlighting the changes, thus we require the reveal buttons
-            appVersion < 2 && (
-              <Card
-                title={t("MainPage.ImprovedRecipe")}
-                loading={improvedRecipeLoading}
-                ref={refMap["improved-recipe-wrapper"]}
-                // actions={[
-                //   <Popover
-                //     content={
-                //       "Reveal one extra " +
-                //       (currentMode === "sentence" ? "sentence" : "word") +
-                //       "!"
-                //     }
-                //   >
-                //     <QuestionOutlined
-                //       onClick={revealExtraWord}
-                //       ref={refMap["reveal-next-change"]}
-                //     />
-                //   </Popover>,
-                //   <Popover
-                //     content={
-                //       "Reveal all " +
-                //       (currentMode === "sentence" ? "sentences" : "words") +
-                //       "!"
-                //     }
-                //   >
-                //     <BulbOutlined
-                //       onClick={revealAllWords}
-                //       ref={refMap["reveal-all-changes"]}
-                //     />
-                //   </Popover>,
-                // ]}
-              >
-                {appVersion === 1 &&
-                  improvedRecipe &&
-                  currentMode === "sentence" && (
-                    <UserHighlightWeExplain
-                      improvedRecipe={improvedRecipe}
-                      sendUserResults={finishReview}
-                      setRevealExtraWord={setRevealExtraWord}
-                      setRevealAllWords={setRevealAllWords}
-                      waitToFindAllWords={false}
-                    />
-                  )}
-                {appVersion === 1 &&
-                  improvedRecipe &&
-                  currentMode === "word" && (
-                    <UserHighlightWeExplain_word
-                      improvedRecipe={improvedRecipe}
-                      sendUserResults={finishReview}
-                      setRevealExtraWord={setRevealExtraWord}
-                      setRevealAllWords={setRevealAllWords}
-                      waitToFindAllWords={false}
-                    />
-                  )}
-                {appVersion === 0 &&
-                  improvedRecipe &&
-                  currentMode === "sentence" && (
-                    <UserHighlightUserExplain
-                      improvedRecipe={improvedRecipe}
-                      sendUserResults={finishReview}
-                      setRevealExtraWord={setRevealExtraWord}
-                      setRevealAllWords={setRevealAllWords}
-                      waitToFindAllWords={false}
-                    />
-                  )}
-                {appVersion === 0 &&
-                  improvedRecipe &&
-                  currentMode === "word" && (
-                    <UserHighlightUserExplain_word
-                      improvedRecipe={improvedRecipe}
-                      sendUserResults={finishReview}
-                      setRevealExtraWord={setRevealExtraWord}
-                      setRevealAllWords={setRevealAllWords}
-                      waitToFindAllWords={false}
-                    />
-                  )}
-                {!improvedRecipe && <Empty description="No recipe yet!" />}
-              </Card>
-            )
-          }
-          {appVersion >= 2 && (
             <Card
               title={t("MainPage.ImprovedRecipe")}
               loading={improvedRecipeLoading}
               ref={refMap["improved-recipe-wrapper"]}
             >
-              {appVersion === 2 &&
-                improvedRecipe &&
-                currentMode === "sentence" && (
+              {appVersion === 0 &&
+                improvedRecipe && (
                   <WeHighlightUserExplain
                     improvedRecipe={improvedRecipe}
                     sendUserResults={finishReview}
                     waitToFindAllWords={false}
                   />
                 )}
-              {appVersion === 2 && improvedRecipe && currentMode === "word" && (
-                <WeHighlightUserExplain_word
-                  improvedRecipe={improvedRecipe}
-                  sendUserResults={finishReview}
-                  waitToFindAllWords={false}
-                />
-              )}
-              {appVersion === 3 &&
+              {appVersion === 1 &&
                 improvedRecipe &&
-                currentMode === "sentence" && (
+                (
                   <WeHighlightWeExplain
                     improvedRecipe={improvedRecipe}
                     sendUserResults={finishReview}
                     waitToFindAllWords={false}
                   />
                 )}
-              {appVersion === 3 && improvedRecipe && currentMode === "word" && (
-                <WeHighlightWeExplain_word
-                  improvedRecipe={improvedRecipe}
-                  sendUserResults={finishReview}
-                  waitToFindAllWords={false}
-                />
-              )}
+              {appVersion === 2 &&
+                improvedRecipe &&
+                (
+                  <WeHighlightWeExplainWithLLM
+                    improvedRecipe={improvedRecipe}
+                    sendUserResults={finishReview}
+                    waitToFindAllWords={false}
+                  />
+                )}
+                {appVersion > 2 && improvedRecipe && (
+                  <Typography>
+                    Oops you aren't supposed to be here. Something went wrong. Please change versions.
+                  </Typography>
+                )}
               {!improvedRecipe && <Empty description="No recipe yet!" />}
             </Card>
-          )}
         </Col>
       </Row>
     </Space>

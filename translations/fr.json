@@ -70,7 +70,13 @@
       "Level4": "Amélioration significative",
       "Level5": "Amélioration majeure"
     },
-    "Warning": "Notez que cela pourrait entraîner une déviation significative de la recette originale."
+    "Warning": "Notez que cela pourrait entraîner une déviation significative de la recette originale.",
+    "Tour": {
+      "step1Title": "Votre Recette",
+      "step1Description": "Écrivez votre recette! Toute recette est acceptable, mais assurez-vous qu'elle fasse au moins 25 caractères!",
+      "step2Title": "Soumettre!",
+      "step2Description": "Envoyez votre recette au chef AI en cliquant ici!"
+    }
   },
   "guider": {
     "step1Title": "Votre Recette",
@@ -85,5 +91,42 @@
   "LearningTest": {
     "Submit": "Terminer la révision",
     "CardTitle": "Recette Exemple"
-  }
+  },
+  "WeHighlightWeExplainWithLLM": {
+    "Tour": {
+      "step1Title": "Les changements déjà marqués",
+      "step1Description": "Les changements seront déjà marqués pour vous.",
+      "step2Title": "Pourquoi avons-nous fait cela?",
+      "step2Description": "Cliquer sur un changement marqué fera apparaître cette popup. Dans cette popup, vous serez invité à écrire pourquoi vous pensez que nous avons fait ce changement. Vous pourrez également voir une explication faite par l'IA. Sélectionnez si vous aimez ou n'aimez pas ce changement.",
+      "step3Title": "Passez en revue les changements!",
+      "step3Description": "Passez en revue autant de changements que vous le souhaitez!",
+      "step4Title": "Conclusion!",
+      "step4Description": "Après avoir l'impression d'en avoir fait assez, vous pouvez soumettre vos résultats quand vous le souhaitez!"
+    }
+  },
+  "WeHighlightWeExplain": {
+    "Tour": {
+      "step1Title": "Les changements déjà marqués",
+      "step1Description": "Les changements seront déjà marqués pour vous.",
+      "step2Title": "Pourquoi avons-nous fait cela?",
+      "step2Description": "Cliquer sur un changement marqué fera apparaître cette popup. Dans cette popup, vous trouverez une explication sur pourquoi ce changement a été fait. Sélectionnez si vous aimez ou n'aimez pas ce changement.",
+      "step3Title": "Passez en revue les changements!",
+      "step3Description": "Passez en revue autant de changements que vous le souhaitez!",
+      "step4Title": "Conclusion!",
+      "step4Description": "Après avoir l'impression d'en avoir fait assez, vous pouvez soumettre vos résultats quand vous le souhaitez!"
+    }
+  },
+  "WeHighlightUserExplain": {
+    "Tour": {
+      "step1Title": "Les changements déjà marqués",
+      "step1Description": "Les changements seront déjà marqués pour vous.",
+      "step2Title": "Pourquoi avons-nous fait cela?",
+      "step2Description": "Cliquer sur un changement marqué fera apparaître cette popup. Dans cette popup, vous serez invité à expliquer pourquoi vous pensez que ce changement a été fait. Sélectionnez également si vous aimez ou n'aimez pas ce changement.",
+      "step3Title": "Passez en revue les changements!",
+      "step3Description": "Passez en revue autant de changements que vous le souhaitez!",
+      "step4Title": "Conclusion!",
+      "step4Description": "Après avoir l'impression d'en avoir fait assez, vous pouvez soumettre vos résultats quand vous le souhaitez!"
+    }
+  },
+  "ExplanationPlaceHolder": "Écrivez une petite explication, au moins 5 caractères"
 }

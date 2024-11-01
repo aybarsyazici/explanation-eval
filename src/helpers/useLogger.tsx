@@ -50,6 +50,15 @@ const useLogger = () => {
     });
   };
 
+  const logSeeLLMExplanation = (index: number, open: boolean) => {
+    logTimeDetail({
+      timestamp: Date.now(),
+      detail: "seeLLMExplanation",
+      open,
+      index,
+    });
+  }
+
   const getResults = () => {
     return timeDetails;
   }
@@ -64,6 +73,7 @@ const useLogger = () => {
     logDisliked,
     logWrongSelection,
     logWriteExplanation,
+    logSeeLLMExplanation,
     getResults,
   };
 };

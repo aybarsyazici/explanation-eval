@@ -13,6 +13,8 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 import confetti from "canvas-confetti"; // Import the library
 import { IPageRef, TourContext } from "../..";
 import TextArea from "antd/es/input/TextArea";
+import { useTranslation } from "react-i18next";
+import { TFunction } from "i18next";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -34,6 +36,7 @@ interface ClickableWordProps {
   likeButtonRef: React.RefObject<HTMLDivElement> | undefined;
   popRef: React.RefObject<HTMLDivElement> | undefined;
   spanRef: React.RefObject<HTMLSpanElement> | undefined;
+  t: TFunction<"translation", undefined>;
 }
 
 interface ClickableWordPropsTemp {
@@ -60,13 +63,14 @@ const ClickableWord: React.FC<ClickableWordProps> = React.memo(
     likeButtonRef,
     popRef,
     spanRef,
+    t,
   }) => {
     return (
       <Popover
         content={
           <div>
             <TextArea
-              placeholder="Write a small explanation, at least 5 characters"
+              placeholder={t("ExplanationPlaceHolder")}
               autoSize={{ minRows: 3, maxRows: 5 }}
               style={{ marginBottom: "5px" }}
               value={wordExplanation}
@@ -130,6 +134,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
   );
   const [showPopover, setShowPopover] = useState<number | null>(null);
   const [allWordsSelected, setAllWordsSelected] = useState<boolean>(false);
+  const { t } = useTranslation();
   // Read dark mode from config
   const { recipeText, annotations } = improvedRecipe;
   // const annotations = {'Worcestershire': [['worcestershir', 16], ['worcestershir', 72]], 'sift': [['sift', 37]], 'sifted': [['sift', 54]], 'Heat': [['heat', 45]], 'bowl,': [['bowl', 36]], 'separate': [['separ', 35]], 'choice]': [['choic', 23]], 'Spices': [['spice', 20]], 'spices': [['spice', 40], ['spice', 56]], 'Oil': [['oil', 10]], 'oil': [['oil', 47]], 'Stir': [['stir', 62], ['stir', 78]], 'pour': [['pour', 94]], 'Flour': [['flour', 12]], 'flour': [['flour', 42], ['flour', 58]], 'pan': [['pan', 50]], 'Dry': [['dry', 19]], 'dry': [['dry', 39], ['dry', 55]], 'thicken]': [['thicken', 14]], 'thickens.': [['thicken', 65]], 'thickened': [['thicken', 76]], 'mixture': [['mixtur', 59]], 'mixture.': [['mixtur', 77]]}
@@ -427,6 +432,7 @@ export const ImprovedRecipeDisplayWordScale: React.FC<
                           ? refMap["third-word"]
                           : undefined
                   }
+                  t={t}
                 />
               );
             })}

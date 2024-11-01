@@ -72,8 +72,8 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({ submitHit, api }) => {
   const createTour = () => {
     const refs: IPageRef[] = [];
     refs.push({
-      title: "Your recipe!",
-      content: `writing your recipe here! Any recipe is fine, but make sure it's at least 25 characters long!`,
+      title: t("RecipeForm.Tour.step1Title"),
+      content: t("RecipeForm.Tour.step1Description"),
       target: refMap["recipe-form"],
       onClose: () => {
         handleSubmit(true);
@@ -81,8 +81,8 @@ export const RecipeForm: React.FC<RecipeFormProps> = ({ submitHit, api }) => {
       },
     });
     refs.push({
-      title: "Submit!",
-      content: "Send your recipe to the AI chef by clicking here!",
+      title: t("RecipeForm.Tour.step2Title"),
+      content: t("RecipeForm.Tour.step2Description"),
       target: refMap["submit-recipe"],
       onNext: () => {
         handleSubmit(true);

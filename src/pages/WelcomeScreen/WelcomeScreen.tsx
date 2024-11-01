@@ -30,14 +30,14 @@ const passwordDefinitions = {
   appv1xhyu: 0,
   appv2bpog: 1,
   appv3hiec: 2,
-  appv4oume: 3,
+  // appv4oume: 3,
 };
 
 const appVersionToPassword = {
   0: "appv1xhyu",
   1: "appv2bpog",
   2: "appv3hiec",
-  3: "appv4oume",
+  // 3: "appv4oume",
 };
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
