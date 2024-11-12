@@ -26,6 +26,7 @@ export type BackendUserResultDetails = {
   mode: string;
   variant: string;
   timeDetails: TimeDetail[];
+  llmExplanations?: { [key: number]: string };
 };
 
 export type TimeDetail = {

@@ -102,7 +102,7 @@
       "Step3Title": "Review the changes!",
       "Step3Description": "Go through as many changes as you want!",
       "Step4Title": "Wrapping up!",
-      "Step4Description": "After you feel like you have done enough, you can submit your results whenever you want!"
+      "Step4Description": "After reviewing AT LEAST HALF of the changes, you can submit your results whenever you want!"
     }
   },
   "WeHighlightWeExplain": {
@@ -114,8 +114,7 @@
       "Step3Title": "Review the changes!",
       "Step3Description": "Go through as many changes as you want!",
       "Step4Title": "Wrapping up!",
-      "Step4Description": "After you feel like you have done enough, you can submit your results whenever you want!"
-    }
+      "Step4Description": "After reviewing AT LEAST HALF of the changes, you can submit your results whenever you want!"    }
   },
   "WeHighlightUserExplain":{
     "Tour": {
@@ -126,8 +125,7 @@
       "Step3Title": "Review the changes!",
       "Step3Description": "Go through as many changes as you want!",
       "Step4Title": "Wrapping up!",
-      "Step4Description": "After you feel like you have done enough, you can submit your results whenever you want!"
-    }
+      "Step4Description": "After reviewing AT LEAST HALF of the changes, you can submit your results whenever you want!"    }
   },
   "ExplanationPlaceHolder": "Write a small explanation, at least 5 characters",
   "SeeExplanationCheckbox": "See a suggested explanation",

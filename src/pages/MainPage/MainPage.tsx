@@ -306,7 +306,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                   <WeHighlightUserExplain
                     improvedRecipe={improvedRecipe}
                     sendUserResults={finishReview}
-                    waitToFindAllWords={false}
+                    waitToFindAllWords={true}
                   />
                 )}
               {appVersion === 1 &&
@@ -315,7 +315,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                   <WeHighlightWeExplain
                     improvedRecipe={improvedRecipe}
                     sendUserResults={finishReview}
-                    waitToFindAllWords={false}
+                    waitToFindAllWords={true}
                   />
                 )}
               {appVersion === 2 &&
@@ -324,7 +324,7 @@ export const MainPage: React.FC<MainPageProps> = ({
                   <WeHighlightWeExplainWithLLM
                     improvedRecipe={improvedRecipe}
                     sendUserResults={finishReview}
-                    waitToFindAllWords={false}
+                    waitToFindAllWords={true}
                   />
                 )}
                 {appVersion > 2 && improvedRecipe && (

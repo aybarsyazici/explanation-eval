@@ -325,7 +325,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     const totalWords = acceptedSentences + declinedSentences;
     if (
       totalSentenceCount &&
-      totalWords === totalSentenceCount &&
+      totalWords >= (totalSentenceCount)/2 &&
       !allWordsSelected
     ) {
       setAllWordsSelected(true);
@@ -353,6 +353,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       mode: "sentence",
       variant: "WeHighlightWeExplain",
       timeDetails: getResults(),
+      llmExplanations: improvedRecipe.explanations,
     };
     // console.log('Sending to trace backend: ', res)
     sendUserResults(res);
