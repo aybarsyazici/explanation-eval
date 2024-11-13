@@ -334,6 +334,11 @@ export const MainPage: React.FC<MainPageProps> = ({
                 )}
               {!improvedRecipe && <Empty description="No recipe yet!" />}
             </Card>
+            {improvedRecipe && (
+              <Typography>
+                {t("MainPage.ImprovedRecipeDescription")}
+              </Typography>
+            )}
         </Col>
       </Row>
     </Space>

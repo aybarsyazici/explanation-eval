@@ -57,7 +57,8 @@
     "ContentRevealChangesOne": "Cliquez ici pour révéler l'un des changements!",
     "TitleRevealChangesAll": "Révéler les changements!",
     "ContentRevealChangesAll": "Cliquez ici pour révéler tous les changements!",
-    "ImprovedRecipe": "Recette améliorée"
+    "ImprovedRecipe": "Recette améliorée",
+    "ImprovedRecipeDescription": "Revoyez au moins la moitié des changements pour pouvoir soumettre"
   },
   "RecipeForm": {
     "SubmitButton": "Obtenir la recette améliorée",
@@ -131,5 +132,6 @@
   "ExplanationPlaceHolder": "Expliquez brièvement le changement, au moins 5 caractères",
   "SeeExplanationCheckbox": "Voir une proposition d'explication",
   "SubmitResults": "Soumettre votre réponse",
-  "CurrentAppVersion": "Version actuelle de l'application: "
+  "CurrentAppVersion": "Version actuelle de l'application: ",
+  "CongratulationsMessage": "Félicitations! Vous pouvez maintenant soumettre vos résultats!"
 }

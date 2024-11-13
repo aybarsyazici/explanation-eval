@@ -571,7 +571,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         <Form.Item>
           {waitToFindAllWords && (
             <Typography.Text strong className={congratsClass}>
-              Congratulations! You found all words!
+              {t("CongratulationsMessage")}
             </Typography.Text>
           )}
           <Button

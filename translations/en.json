@@ -57,7 +57,8 @@
     "ContentRevealChangesOne": "Click here to reveal one of the changes!",
     "TitleRevealChangesAll": "Reveal the changes!",
     "ContentRevealChangesAll": "Click here to reveal all of the changes!",
-    "ImprovedRecipe": "Improved Recipe"
+    "ImprovedRecipe": "Improved Recipe",
+    "ImprovedRecipeDescription": "Review at least half of the changes to be able to submit"
   },
   "RecipeForm": {
     "SubmitButton": "Get Improved Recipe",
@@ -130,5 +131,6 @@
   "ExplanationPlaceHolder": "Write a small explanation, at least 5 characters",
   "SeeExplanationCheckbox": "See a suggested explanation",
   "SubmitResults": "Submit your response",
-  "CurrentAppVersion": "Current App Version: "
+  "CurrentAppVersion": "Current App Version: ",
+  "CongratulationsMessage": "Congratulations! You can now submit your results!"
 }

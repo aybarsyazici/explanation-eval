@@ -8,6 +8,7 @@ import TextArea from "antd/es/input/TextArea";
 import { IPageRef, TourContext } from "../../AppTour/TourContext";
 import useLogger from "../../../helpers/useLogger";
 import { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 
 type ImprovedRecipeDisplayProps = {
   improvedRecipe: ImprovedRecipe;
@@ -558,7 +559,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
     },
     [setSentenceExplanations],
   );
-
+  const { t } = useTranslation();
   // Animation classes added to the elements
   const submitButtonClass = allWordsSelected ? "submit-button-enter" : "";
   const congratsClass = allWordsSelected ? "congrats-text-enter" : "";
@@ -611,7 +612,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         <Form.Item>
           {waitToFindAllWords && (
             <Typography.Text strong className={congratsClass}>
-              Congratulations! You found all words!
+              {t("CongratulationsMessage")}
             </Typography.Text>
           )}
           <Button

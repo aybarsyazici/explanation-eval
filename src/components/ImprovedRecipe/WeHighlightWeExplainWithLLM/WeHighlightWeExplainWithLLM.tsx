@@ -34,8 +34,8 @@ type ImprovedRecipeDisplayProps = {
 interface ClickableSentenceProps {
   sentence: string;
   index: number;
-  onAccept: (index: number) => void;
-  onDecline: (index: number) => void;
+  onAccept: (index: number, sentenceExplanation: string) => void;
+  onDecline: (index: number, sentenceExplanation: string) => void;
   toggleSelection: (index: number) => void;
   showPopover: boolean;
   setShowPopover: (index: number | null) => void;
@@ -132,12 +132,12 @@ const ClickableSentence: React.FC<ClickableSentenceProps> = React.memo(
             </div>
 
             <div className="like-dislike-container">
-              <Button className="like-button" onClick={() => onAccept(index)}>
+              <Button className="like-button" onClick={() => onAccept(index, sentenceExplanation)}>
                 <LikeOutlined />
               </Button>
               <Button
                 className="dislike-button"
-                onClick={() => onDecline(index)}
+                onClick={() => onDecline(index, sentenceExplanation)}
               >
                 <DislikeOutlined />
               </Button>
@@ -235,7 +235,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       content: t("WeHighlightWeExplainWithLLM.Tour.step2Description"),
       target: refMap["first-sentence-pop"],
       onNext: () => {
-        handleAccept(0);
+        handleAccept(0, "explanation from tour");
       },
       preventClose: true,
     });
@@ -244,8 +244,8 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
       content: t("WeHighlightWeExplainWithLLM.Tour.step3Description"),
       target: refMap["all-word-wrapper"],
       onNext: () => {
-        handleAccept(2);
-        handleDecline(4);
+        handleAccept(2, "explanation from tour");
+        handleDecline(4, "explanation from tour");
       },
       preventClose: true,
     });
@@ -414,27 +414,39 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
   };
 
   // useCallback to memoize the function
-  const handleAccept = useCallback((index: number) => {
-    // Check whether the explanation is longer than 5 characters
-    setSelectedSentences((prev) => {
-      const newSelected = new Map(prev);
-      newSelected.set(index, "accepted");
-      return newSelected;
-    });
-    setShowPopover(null);
-    logLiked(index);
-  }, []);
-
+  const handleAccept = useCallback(
+    (index: number, sentenceExplanation: string) => {
+      // Check whether the explanation is longer than 5 characters
+      if (sentenceExplanation.length < 5) {
+        return;
+      }
+      setSelectedSentences((prev) => {
+        const newSelected = new Map(prev);
+        newSelected.set(index, "accepted");
+        return newSelected;
+      });
+      setShowPopover(null);
+      logLiked(index);
+    },
+    []
+  );
   // useCallback to memoize the function
-  const handleDecline = useCallback((index: number) => {
-    setSelectedSentences((prev) => {
-      const newSelected = new Map(prev);
-      newSelected.set(index, "declined");
-      return newSelected;
-    });
-    setShowPopover(null);
-    logDisliked(index);
-  }, []);
+  const handleDecline = useCallback(
+    (index: number, sentenceExplanation: string) => {
+      // Check whether the explanation is longer than 5 characters
+      if (sentenceExplanation.length < 5) {
+        return;
+      }
+      setSelectedSentences((prev) => {
+        const newSelected = new Map(prev);
+        newSelected.set(index, "declined");
+        return newSelected;
+      });
+      setShowPopover(null);
+      logDisliked(index);
+    },
+    []
+  );
 
   useEffect(() => {
     let sentenceIndex = 0; // Tracks the index of sentences
@@ -635,7 +647,7 @@ export const ImprovedRecipeDisplaySentenceScale: React.FC<
         <Form.Item>
           {waitToFindAllWords && (
             <Typography.Text strong className={congratsClass}>
-              Congratulations! You found all words!
+              {t("CongratulationsMessage")}
             </Typography.Text>
           )}
           <Button
